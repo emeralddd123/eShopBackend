@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import (
     Product,
     ProductCategory,
-    ProductInventory,
     Order,
     OrderItem,
     Discount,
@@ -11,7 +10,6 @@ from .models import (
 # Register your models here.
 admin.site.register(Product)
 admin.site.register(ProductCategory)
-admin.site.register(ProductInventory)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Discount)
