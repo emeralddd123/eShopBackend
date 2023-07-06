@@ -23,6 +23,7 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("authApp.urls")),
+    path("vendor/", include("vendor.urls")),
     path('', include('core.urls')),
     path("docs", include_docs_urls(title="eShop Backend API")),
     path("schema", get_schema_view(

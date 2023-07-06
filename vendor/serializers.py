@@ -13,7 +13,6 @@ class VendorSignupSerializer(ModelSerializer):
         if validate_password(validated_data['password']) == None:
             password = make_password(validated_data['password'])                          
             vendor = Vendor.objects.create(
-                  username=validated_data['username'],
                   email=validated_data['email'],
                   store_name=validated_data['store_name'],
                   description=validated_data['description'],
@@ -25,6 +24,6 @@ class VendorSignupSerializer(ModelSerializer):
 class VendorSigninSerializer(ModelSerializer):
     class Meta:
         model = Vendor
-        fields =  ['email', 'password', ]
-        
+        fields =  ['email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
         

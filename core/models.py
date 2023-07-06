@@ -12,7 +12,7 @@ class ProductCategory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return "{}".format(self.name)
 
 class Discount(models.Model):
     id = models.AutoField(primary_key=True)
