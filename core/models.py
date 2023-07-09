@@ -1,6 +1,5 @@
 from django.db import models
-from authApp.models import User
-from vendor.models import Vendor
+from authApp.models import User, Vendor, Customer
 
 
 # Create your models here.
@@ -84,3 +83,13 @@ class OrderItem(models.Model):
 
 
 
+class Cart(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    def get_total_price(self):
+        return self.product.price * self.quantity

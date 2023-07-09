@@ -1,58 +1,54 @@
 from rest_framework import serializers
 
-from .models import Product, Discount, Order, OrderItem, ProductCategory
+from .models import Product, Discount, Order, OrderItem, ProductCategory, Cart
 from authApp.models import User
-from vendor.models import Vendor
+from authApp.models import Vendor
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCategory
         fields = ['id', 'name', 'desc']
-        #excludes = ['created_at', 'updated_at']
+        excludes = ['created_at', 'updated_at']
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'desc', 'sku', 'price', 'categories']
-        #depth = 1
+        depth = 1
         read_only_fields = ['id', 'sku']
 
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+
+    class Meta:
+        model = OrderItem
+        fields = ['product', 'quantity', 'price', 'subtotal']
         
 class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+
     class Meta:
+        depth=1
         model = Order
-        fields = ['id','items', 'user', 'total']
-        depth = 1
+        fields = ['id', 'user', 'created_at', 'items','total']
         
-class unknown():
-    pass  
-'''  
-    name = serializers.CharField()
-    desc = serializers.TextField()
-    sku = serializers.CharField(max_length=200, unique=True)
-    price = serializers.DecimalField()
-    categories = serializers.ManyRelatedField() 
-    created_at = serializers.DateTimeField()
-    updated_at = serializers.DateTimeField()
-
-    def create(self, validated_data):
-        return Product(**validated_data)
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.desc = validated_data.get('desc', instance.desc)
-        instance.sku = instance.sku 
-        instance.price = validated_data.get('price', instance.price)
-        instance.categories = validated_data.get('categories', instance.categories)
-        instance.updated_at = serializers.DateTimeField(auto_now=True)
-        
-        instance.save()
-        return instance
-'''
         
         
 class ProductInventorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         
+
+
+class CartSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    order = serializers.PrimaryKeyRelatedField(read_only=True)
+    total_price = serializers.SerializerMethodField()
+
+    def get_total_price(self, obj):
+        return obj.get_total_price()
+
+    class Meta:
+        model = Cart
+        fields = '__all__'

@@ -12,6 +12,7 @@ class User(AbstractUser):
 
     base_role = Role.ADMIN
     role = models.CharField(max_length=50, choices=Role.choices)
+    
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -22,7 +23,7 @@ class User(AbstractUser):
 class CustomerManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         result = super().get_queryset(*args, **kwargs)
-        return result.filter(role=User.role.CUSTOMER)
+        return result.filter(role=User.Role.CUSTOMER)
 
 
 class Customer(User):
@@ -46,7 +47,7 @@ class CustomerProfile(models.Model):
 class VendorManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         result = super().get_queryset(*args, **kwargs)
-        return result.filter(role=User.role.VENDOR)
+        return result.filter(role=User.Role.VENDOR)
 
 
 class Vendor(User):
@@ -59,12 +60,11 @@ class Vendor(User):
     def welcome(self):
         return "Only for Vendor"
 
-class VendorProfile(models.Model):
+class VendorStore(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     vendor_id = models.IntegerField(null=True, blank=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=255, blank=True, null=True)
-    date_of_birth = models.DateField(blank=True, null=True)
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
 # Create your models here.
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -80,11 +80,3 @@ class Address(models.Model):
         return f" {self.city}, {self.country}"
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to="profile_pics", blank=True, null=True)
-    date_of_birth = models.DateField(blank=True, null=True)
-
-    def __str__(self):
-        return self.user.username
