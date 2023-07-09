@@ -2,6 +2,17 @@ from django.db import models
 from authApp.models import User, Vendor, Customer
 
 
+
+import random
+# Create your views here.
+def generate_sku(product_name):
+  """Generates a unique SKU from the product name."""
+  product_name_words = product_name.split(" ")
+  sku = ""
+  for word in product_name_words:
+    sku += word[0]
+  sku += str(random.randint(100000, 999999))
+  return sku
 # Create your models here.
 class ProductCategory(models.Model):
     id = models.AutoField(primary_key=True)
@@ -31,7 +42,7 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField()
     name = models.CharField(max_length=200)
     desc = models.TextField()
-    sku = models.CharField(max_length=200, unique=True)
+    sku = models.CharField(max_length=200, unique=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     categories = models.ManyToManyField(ProductCategory, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -39,6 +50,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    def save(self):
+        self.sku = generate_sku(self.name)
+        super().save()
     
     class Meta:
         ordering = ['name', 'vendor']
@@ -49,7 +63,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, default=0.00)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -85,7 +99,7 @@ class OrderItem(models.Model):
 
 class Cart(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)

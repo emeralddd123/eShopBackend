@@ -14,7 +14,7 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'desc', 'sku', 'price', 'categories']
+        fields = ['id','vendor', 'quantity', 'name', 'desc', 'sku', 'price', 'categories']
         depth = 1
         read_only_fields = ['id', 'sku']
 
@@ -24,6 +24,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ['product', 'quantity', 'price', 'subtotal']
+        depth = 1
         
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
@@ -52,3 +53,4 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = '__all__'
+        depth = 1

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, pagination
-
+from typing import List
+from authApp.models import Vendor
 from .models import Product, ProductCategory, Cart, Order, OrderItem
 from .serializers import (
     ProductSerializer,
@@ -9,8 +10,6 @@ from .serializers import (
     OrderSerializer,
     OrderItemSerializer,
 )
-
-# Create your views here.
 
 
 class CategoryListView(generics.ListAPIView):
@@ -33,6 +32,45 @@ class ProductListView(generics.ListAPIView):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+
+
+class ProductCreateView(generics.CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def perform_create(self, serializer):
+        vendor = self.request.user
+        quantity = self.request.data.get("quantity")
+        name = self.request.data.get("name")
+        desc = self.request.data.get("desc")
+        price = self.request.data.get("price")
+        category_list = self.request.data.get("categories")
+        print(category_list)
+
+        categories = []
+        for category in category_list:
+            product_category = ProductCategory.objects.get(id=category)
+            categories.append(product_category)
+
+        product = Product(
+            vendor=vendor,
+            quantity=quantity,
+            name=name,
+            desc=desc,
+            price=price,
+            categories=categories,
+        )
+        
+        product.save()
+        
+class ProductUpdateView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+class ProductRetrieveView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
 
 
 class CartListView(generics.ListCreateAPIView):
@@ -69,32 +107,51 @@ class OrderCreateView(generics.CreateAPIView):
         OrderItem.objects.bulk_create(order_items)
         cart_items.delete()
 
+
 class OrderListView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+
 class OrderDetailView(generics.RetrieveAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    
+
+
+class OrderUpdateView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+class OrderDeleteView(generics.DestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
 class CartCreateView(generics.CreateAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
     def perform_create(self, serializer):
         user = self.request.user
-        product_id = self.request.data.get('product_id')
-        quantity = self.request.data.get('quantity')
+        product_id = self.request.data.get("product_id")
+        quantity = self.request.data.get("quantity")
 
         product = Product.objects.get(id=product_id)
         cart = Cart(user=user, product=product, quantity=quantity)
         cart.save()
-        
-class CartRetrieveView(generics.RetrieveAPIView):
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
-    
-class CartDeleteView(generics.DestroyAPIView):
+
+
+class CartUpdateView(generics.UpdateAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
+
+class CartRetrieveView(generics.RetrieveAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+
+class CartDeleteView(generics.DestroyAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer

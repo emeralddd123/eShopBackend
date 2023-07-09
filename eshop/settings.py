@@ -183,7 +183,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 # to be able to login with either email or username or both with password
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+#ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 # to avoid signing up with invalid email
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
