@@ -3,6 +3,10 @@ from dj_rest_auth.registration.views import  RegisterView, VerifyEmailView
 from dj_rest_auth.views import PasswordResetConfirmView
 from django.views.generic import TemplateView
 from allauth.account.views import email_verification_sent 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from .views import Mod_ResendEmailVerificationView, Mod_PasswordResetView, CustomPasswordResetView
 
 from .socialviews import GoogleLogin
@@ -16,6 +20,8 @@ urlpatterns = [
     path("registration/account-confirm-email/",email_verification_sent,name="account_email_verification_sent"),
     path('registration/resend-email/', Mod_ResendEmailVerificationView.as_view(), name="rest_resend_email"),
     path('password/reset/confirm/<str:uidb64>/<str:token>', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     #social login
     path('google/', GoogleLogin.as_view(), name='google_login')

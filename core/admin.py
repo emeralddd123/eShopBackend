@@ -5,7 +5,6 @@ from .models import (
     Order,
     OrderItem,
     Discount,
-    Cart
 )
 
 # Register your models here.
@@ -14,4 +13,3 @@ admin.site.register(ProductCategory)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Discount)
-admin.site.register(Cart)

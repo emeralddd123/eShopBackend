@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+
 import environ
 
 env = environ.Env()
@@ -45,11 +47,12 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "drf_yasg",
     "rest_framework",
     "rest_framework.authtoken",
+    
     "dj_rest_auth",
     "dj_rest_auth.registration",
-    
     "authApp",
     "core",
 ]
@@ -87,7 +90,7 @@ WSGI_APPLICATION = "eshop.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-'''
+"""
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -98,19 +101,18 @@ DATABASES = {
         "PORT": env("DB_PORT"),
     }
 }
-'''
+"""
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'sqlite3.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        "NAME": "sqlite3.db",  # Or path to database file if using sqlite3.
+        "USER": "",  # Not used with sqlite3.
+        "PASSWORD": "",  # Not used with sqlite3.
+        "HOST": "",  # Set to empty string for localhost. Not used with sqlite3.
+        "PORT": "",  # Set to empty string for default. Not used with sqlite3.
     }
 }
-
 
 
 # Password validation
@@ -130,6 +132,13 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
 
 
 # Internationalization
@@ -157,36 +166,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        'rest_framework.authentication.SessionAuthentication',
     ),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 50,
-    
-
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 50,
 }
-
-REST_AUTH_SERIALIZERS = {
-    #'LOGIN_SERIALIZER': 'authSystem.mod_serializers.Mod_LoginSerializer',
-    "REST_USE_JWT": True,
-    "OLD_PASSWORD_FIELD_ENABLED": True,
-}
-
-REST_USE_JWT = True
-
-JWT_AUTH_COOKIE = "my-app-auth"
-
-JWT_AUTH_REFRESH_COOKIE = "my-refresh-token"
 
 ACCOUNT_EMAIL_REQUIRED = True
 
 # to be able to login with either email or username or both with password
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
-#ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+# ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 # to avoid signing up with invalid email
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"  #"mandatory", "optional", or "none"
 
 ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 180
 
@@ -195,3 +191,5 @@ OLD_PASSWORD_FIELD_ENABLED = True
 ACCOUNT_FORMS = {"reset_password": "authApp.forms.MyCustomResetPasswordForm"}
 
 AUTH_USER_MODEL = "authApp.User"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

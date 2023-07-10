@@ -86,24 +86,12 @@ class OrderItem(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
-    sub_total = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
-
+    ordered = models.BooleanField(default=False)
     def save(self, *args, **kwargs):
         self.sub_total = self.price * self.quantity
         super().save(*args, **kwargs)
         self.order.update_total(self.sub_total)
 
-
-
-class Cart(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
-    
-    def get_total_price(self):
-        return self.product.price * self.quantity
+    def get_total_product_price(self):
+        return self.quantity * self.product.price
