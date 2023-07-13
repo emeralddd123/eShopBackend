@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from rest_framework import generics, pagination
+from rest_framework import generics, pagination, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.permissions import IsAuthenticated
@@ -12,6 +13,7 @@ from .serializers import (
     OrderSerializer,
     OrderItemSerializer,
 )
+from django.forms.models import model_to_dict
 
 
 class CategoryListView(generics.ListAPIView):
@@ -88,42 +90,3 @@ class ProductRetrieveView(generics.RetrieveAPIView):
 
 
 
-
-class OrderListView(generics.ListAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-
-class OrderDetailView(generics.RetrieveAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-
-class OrderUpdateView(generics.UpdateAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-
-class OrderDeleteView(generics.DestroyAPIView):
-    queryset = Order.objects.all()
-    serializer_class = OrderSerializer
-
-'''
-class CartCreateView(generics.CreateAPIView):
-    queryset = Cart.objects.all()
-
-    def perform_create(self, serializer):
-        user = self.request.user
-        product_id = self.request.data.get("product_id")
-        quantity = self.request.data.get("quantity")
-
-        product = Product.objects.get(id=product_id)
-        cart = Cart(user=user, product=product, quantity=quantity)
-        cart.save()
-'''
-
-
-@api_view(['POST'])
-def addItemsToCart(request):
-    product_id=request.data.get("product_id")
-    product = get_object_or_404(Product,id=product_id)
