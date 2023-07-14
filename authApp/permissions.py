@@ -25,6 +25,8 @@ class IsVendorOrReadOnly(BasePermission):
         # Check if the user is a vendor and owns the product
         if request.user.is_authenticated and request.user.role=="VENDOR" and obj.vendor == request.user:
             return True
+        elif obj.vendor != request.user:
+            raise PermissionDenied("This Product Does not belong to you")
         raise PermissionDenied(self.message)
      
 

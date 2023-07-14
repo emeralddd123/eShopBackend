@@ -107,3 +107,5 @@ class MyCustomAllAuthPasswordResetForm(MyCustomResetPasswordForm):
                 'account/email/password_reset_key', email, context
             )
         return self.cleaned_data['email']
+    
+    

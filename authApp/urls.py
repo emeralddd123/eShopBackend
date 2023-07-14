@@ -1,5 +1,5 @@
 from django.urls import path, include,re_path
-from dj_rest_auth.registration.views import  RegisterView, VerifyEmailView
+from dj_rest_auth.registration.views import  VerifyEmailView
 from dj_rest_auth.views import PasswordResetConfirmView
 from django.views.generic import TemplateView
 from allauth.account.views import email_verification_sent 
@@ -10,11 +10,12 @@ from rest_framework_simplejwt.views import (
 from .views import Mod_ResendEmailVerificationView, Mod_PasswordResetView, CustomPasswordResetView
 
 from .socialviews import GoogleLogin
+from .views import Mod_RegisterView
 
 urlpatterns = [
     path('password/reset/', Mod_PasswordResetView.as_view(), name='rest_password_reset'),
     path('', include('dj_rest_auth.urls')),
-    path('registration/', RegisterView.as_view(),name='rest_register'),
+    path('registration/', Mod_RegisterView.as_view(),name='rest_register'),
     path('registration/account-confirm-email/', VerifyEmailView.as_view(), name='rest_verify_email'),
     re_path(r'^registration/account-confirm-email/(?P<key>[-:\w]+)/$', TemplateView.as_view(),name='account_confirm_email'),
     path("registration/account-confirm-email/",email_verification_sent,name="account_email_verification_sent"),
