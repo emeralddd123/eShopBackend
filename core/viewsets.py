@@ -21,7 +21,7 @@ from .models import Product, ProductCategory, Cart, CartItem, Order
 from authApp.models import User
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from authApp.permissions import IsCustomer, IsVendorOrReadOnly
+from authApp.permissions import IsCustomer, IsVendorOrReadOnly, IsCustomerOrReadOnly
 from rest_framework.decorators import permission_classes
 
 
@@ -68,7 +68,7 @@ class CartViewSet(
 ):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    permission_classes = []
+    permission_classes = [IsCustomerOrReadOnly]
 
 
 class CartItemViewSet(ModelViewSet):
@@ -93,11 +93,7 @@ class CartItemViewSet(ModelViewSet):
 
 class OrderViewSet(ModelViewSet):
     http_method_names = ["get", "patch", "post", "delete", "options", "head"]
-
-    # def get_permissions(self):
-    #     if self.request.method in ["PATCH", "DELETE"]:
-    #         return [IsAdminUser()]
-    #     return [IsAuthenticated()]
+    permission_classes = [IsCustomer]
 
     def create(self, request, *args, **kwargs):
         serializer = CreateOrderSerializer(

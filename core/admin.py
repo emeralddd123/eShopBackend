@@ -10,7 +10,16 @@ from .models import (
 )
 
 # Register your models here.
-admin.site.register(Product)
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['sku', 'name', 'quantity', 'price']
+    list_filter = ['categories', 'created_at']
+    search_fields = ['name', 'desc', 'sku']
+    ordering = ['name', 'created_at']
+    prepopulated_fields = {'sku':('name',)}
+    raw_id_fields = ['vendor']
+    
+    
 admin.site.register(ProductCategory)
 admin.site.register(Order)
 admin.site.register(OrderItem)
@@ -18,3 +27,6 @@ admin.site.register(Discount)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 
+
+    
+    
