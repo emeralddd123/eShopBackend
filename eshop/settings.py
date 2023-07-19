@@ -44,16 +44,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
+
     "drf_yasg",
     "rest_framework",
     "rest_framework.authtoken",
     
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "authApp",
     "core",
 ]
@@ -178,21 +173,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 50,
 }
 
-ACCOUNT_EMAIL_REQUIRED = True
 
-# to be able to login with either email or username or both with password
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-
-# ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-
-# to avoid signing up with invalid email
-ACCOUNT_EMAIL_VERIFICATION = "optional"  #"mandatory", "optional", or "none"
-
-ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 180
-
-OLD_PASSWORD_FIELD_ENABLED = True
-
-ACCOUNT_FORMS = {"reset_password": "authApp.forms.MyCustomResetPasswordForm"}
 
 AUTH_USER_MODEL = "authApp.User"
 
