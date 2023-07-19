@@ -156,10 +156,10 @@ class CreateOrderSerializer(serializers.Serializer):
     
     
     
-    def save(self, **kwargs):
+    def save(self,*args ,**kwargs):
         with transaction.atomic():
             cart_id = self.validated_data["cart_id"]
-            user_id = self.context["user_id"]
+            user_id = self.context["owner"]
             order = Order.objects.create(owner_id = user_id)
             cartitems = CartItem.objects.filter(cart_id=cart_id)
             orderitems = [
@@ -170,7 +170,7 @@ class CreateOrderSerializer(serializers.Serializer):
             for item in cartitems
             ]
             OrderItem.objects.bulk_create(orderitems)
-            # Cart.objects.filter(id=cart_id).delete()
+            Cart.objects.filter(id=cart_id).delete()
             return order
 
 

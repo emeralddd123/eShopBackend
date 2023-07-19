@@ -88,7 +88,7 @@ class CartItemViewSet(ModelViewSet):
         return CartItemSerializer
 
     def get_serializer_context(self):
-        return {"cart_id": self.kwargs["cart_pk"]}
+        return {"cart_id": self.kwargs["cart_id"]}
 
 
 class OrderViewSet(ModelViewSet):
@@ -97,7 +97,7 @@ class OrderViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = CreateOrderSerializer(
-            data=request.data, context={"owner": self.request.user.id}
+            data=request.data, context={"owner": self.request.user}
         )
         serializer.is_valid(raise_exception=True)
         order = serializer.save()

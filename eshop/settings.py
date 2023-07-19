@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -90,7 +91,7 @@ WSGI_APPLICATION = "eshop.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-"""
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -101,18 +102,18 @@ DATABASES = {
         "PORT": env("DB_PORT"),
     }
 }
-"""
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        "NAME": "sqlite3.db",  # Or path to database file if using sqlite3.
-        "USER": "",  # Not used with sqlite3.
-        "PASSWORD": "",  # Not used with sqlite3.
-        "HOST": "",  # Set to empty string for localhost. Not used with sqlite3.
-        "PORT": "",  # Set to empty string for default. Not used with sqlite3.
-    }
-}
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#         "NAME": "sqlite3.db",  # Or path to database file if using sqlite3.
+#         "USER": "",  # Not used with sqlite3.
+#         "PASSWORD": "",  # Not used with sqlite3.
+#         "HOST": "",  # Set to empty string for localhost. Not used with sqlite3.
+#         "PORT": "",  # Set to empty string for default. Not used with sqlite3.
+#     }
+# }
 
 
 # Password validation
@@ -157,6 +158,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

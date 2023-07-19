@@ -80,3 +80,11 @@ class Address(models.Model):
         return f" {self.city}, {self.country}"
 
 
+
+class Subscriber(models.Model):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
