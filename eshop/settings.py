@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     
+    "oauth2_provider",
+    
     "authApp",
     "core",
 ]
@@ -178,3 +180,5 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "authApp.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+LOGIN_URL='/admin/login/'

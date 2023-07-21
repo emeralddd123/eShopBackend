@@ -1,6 +1,8 @@
 from django.db import models
 from authApp.models import User, Vendor, Customer
 from uuid import uuid4
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 import random
@@ -30,14 +32,27 @@ class ImageAlbum(models.Model):
         return self.images.filter(width__lt=100, length_lt=100)
     
     
+    
+    
 class Image(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to=get_upload_path)
+    image = models.ImageField(upload_to='images/products/')
     default = models.BooleanField(default=False)
     width = models.FloatField(default=100)
     length = models.FloatField(default=100)
-    album = models.ForeignKey(ImageAlbum, related_name='images', on_delete=models.CASCADE)
-# Create your models here.
+    album = models.ForeignKey(ImageAlbum, blank=True, null=True, related_name='images', on_delete=models.CASCADE )
+    
+# Signal function to create an ImageAlbum instance for each new Image instance
+@receiver(post_save, sender=Image)
+def create_image_album(sender, instance, created, **kwargs):
+    if created and not instance.album:
+        album = ImageAlbum.objects.create()
+        instance.album = album
+        instance.save()
+
+# models.py - Connect the signal
+post_save.connect(create_image_album, sender=Image)
+
 class ProductCategory(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200, blank=False, null=False)

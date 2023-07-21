@@ -12,7 +12,7 @@ from .models import (
 )
 
 # Register your models here.
-class ImageInline(admin.TabularInline):
+class ImageInline(admin.StackedInline):
     model = Image
     extra = 1
     
@@ -29,7 +29,7 @@ class ProductAdmin(admin.ModelAdmin):
     ordering = ['name', 'created_at']
     prepopulated_fields = {'sku':('name',)}
     raw_id_fields = ['vendor']
-    readonly_fields = ['vendor', 'created_at']
+    readonly_fields = ['created_at']
 
 class CartItemInline(admin.StackedInline):
     model = CartItem
