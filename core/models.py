@@ -96,9 +96,9 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.sku = generate_sku(self.name)
-        super().save()
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ["name", "vendor"]

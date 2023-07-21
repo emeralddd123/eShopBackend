@@ -39,6 +39,7 @@ class ProductViewSet(viewsets.ModelViewSet):
         vendor_id = self.request.user.id
         quantity = self.request.data.get("quantity")
         name = self.request.data.get("name")
+        album = self.request.data.get("album")
         desc = self.request.data.get("desc")
         price = self.request.data.get("price")
         category_list = self.request.data.get("categories")
@@ -54,6 +55,7 @@ class ProductViewSet(viewsets.ModelViewSet):
             vendor=vendor,
             quantity=quantity,
             name=name,
+            album=album,
             desc=desc,
             price=price,
         )
