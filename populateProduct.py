@@ -4,8 +4,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eshop.settings")
 import django
 django.setup()
 
-from core.models import Image, ImageAlbum, Product, ProductCategory
-from authApp.models import Vendor
+#from core.models import Image, ImageAlbum, Product, ProductCategory
+#from authApp.models import Vendor
 import random
 # Generate product data with image paths
 

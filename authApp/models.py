@@ -4,11 +4,12 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+    
 class User(AbstractUser):
     class Role(models.TextChoices):
         VENDOR = "VENDOR", "Vendor"
         CUSTOMER = "CUSTOMER", "Customer"
-
+        
     #base_role = Role.CUSTOMER
     role = models.CharField(max_length=50, choices=Role.choices)
     

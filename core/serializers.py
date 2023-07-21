@@ -66,7 +66,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             "categories",
         ]
-        #depth = 1
         read_only_fields = ["id", "sku"]
 
 
