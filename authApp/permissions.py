@@ -5,7 +5,7 @@ from .models import User
 
 
 class IsVendorOrReadOnly(BasePermission):
-    message = "Only Vendor Is Allowed to perform this action"
+    message = "Only Vendors Are Allowed to perform this action"
     
     def has_permission(self, request, view):
         # Allow GET, HEAD, and OPTIONS requests to all users

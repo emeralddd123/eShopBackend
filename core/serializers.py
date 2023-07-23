@@ -23,6 +23,7 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class SummaryImageSerializer(serializers.ModelSerializer):
+    default = serializers.BooleanField()
     class Meta:
         model=Image
         fields = ['name', 'image', 'default']
@@ -66,7 +67,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             "categories",
         ]
-        read_only_fields = ["id", "sku"]
+        read_only_fields = ["id","vendor", "sku"]
 
 
 class SummaryProductSerializer(serializers.ModelSerializer):
@@ -160,11 +161,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
-
+    total = serializers.SerializerMethodField(method_name='total')
     class Meta:
         model = Order
         fields = ["id", "placed_at", "pending_status", "owner", "items"]
 
+    def total(self, items):
+        return sum(item.product.price * item.get('quantity', 0) for item in items)
 
 class CreateOrderSerializer(serializers.Serializer):
     cart_id = serializers.UUIDField()

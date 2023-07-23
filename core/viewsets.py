@@ -17,7 +17,7 @@ from .serializers import (
     OrderSerializer,
     UpdateOrderSerializer,
 )
-from .models import Product, ProductCategory, Cart, CartItem, Order
+from .models import Product, ProductCategory, Cart, CartItem, Order, Image, ImageAlbum
 from authApp.models import User
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -34,18 +34,23 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsVendorOrReadOnly]
-    
+
     def create(self, serializer):
-        vendor_id = self.request.user.id
+        vendor = self.request.user
         quantity = self.request.data.get("quantity")
         name = self.request.data.get("name")
         album = self.request.data.get("album")
         desc = self.request.data.get("desc")
         price = self.request.data.get("price")
         category_list = self.request.data.get("categories")
-        print(category_list)
-        print(vendor_id)
-        vendor = User.objects.get(id=vendor_id)
+        img_album = ImageAlbum.objects.create()
+        for image in album['images']:
+            Image.objects.create(
+                name=image['name'],
+                image=image['name'],
+                default=image['default'],
+                album=img_album,
+            )
         categories = []
         for category in category_list:
             product_category = ProductCategory.objects.get(id=category["id"])
@@ -55,14 +60,14 @@ class ProductViewSet(viewsets.ModelViewSet):
             vendor=vendor,
             quantity=quantity,
             name=name,
-            album=album,
+            album=img_album,
             desc=desc,
             price=price,
         )
         product.save()
         product.categories.set(categories)
-        return Response(status=201)
-
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=201)
 
 
 class CartViewSet(

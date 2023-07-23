@@ -3,27 +3,8 @@ from authApp.models import User, Vendor, Customer
 from uuid import uuid4
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
-
-import random
-
-
-# Create your views here.
-def generate_sku(product_name):
-    """Generates a unique SKU from the product name."""
-    product_name = product_name.strip()
-    product_name_words = product_name.split(" ")
-    sku = ""
-    for word in product_name_words:
-        sku += word[0]
-    sku += str(random.randint(100000, 999999))
-    return sku
-
-def get_upload_path(instance, filename):
-    model = instance.album.model.__class__._meta
-    name = model.verbose_name_plural.replace(' ', '_')
-    return f'{name}/products/{filename + str(random.randint(1000, 9999))}'
-
+from .utils import generate_sku,get_upload_path
+from django.utils import timezone
 
 class ImageAlbum(models.Model):
     def default(self):
@@ -31,17 +12,23 @@ class ImageAlbum(models.Model):
     def thumbnails(self):
         return self.images.filter(width__lt=100, length_lt=100)
     
-    
-    
+      
     
 class Image(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='images/products/')
+    image = models.ImageField(upload_to=get_upload_path)
     default = models.BooleanField(default=False)
     width = models.FloatField(default=100)
     length = models.FloatField(default=100)
     album = models.ForeignKey(ImageAlbum, blank=True, null=True, related_name='images', on_delete=models.CASCADE )
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.created_at = timezone.now()
+        super(Image, self).save(*args, **kwargs)
+        
+        
 # Signal function to create an ImageAlbum instance for each new Image instance
 @receiver(post_save, sender=Image)
 def create_image_album(sender, instance, created, **kwargs):
