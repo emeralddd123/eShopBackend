@@ -44,13 +44,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
-
     "drf_yasg",
     "rest_framework",
     "rest_framework.authtoken",
-    
-    "oauth2_provider",
-    
+    "djoser",
     "authApp",
     "core",
 ]
@@ -157,10 +154,10 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 # Default primary key field type
@@ -171,8 +168,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.TokenAuthentication",
-        'rest_framework.authentication.SessionAuthentication',
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
@@ -180,9 +178,31 @@ REST_FRAMEWORK = {
 }
 
 
-
 AUTH_USER_MODEL = "authApp.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-LOGIN_URL='/admin/login/'
+LOGIN_URL = "/admin/login/"
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=6),
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "username",
+    "PASSWORD_RESET_CONFIRM_URL": "www.frontend.com/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "www.frontend.com/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "www.frontend/account/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": False,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "LOGOUT_ON_PASSWORD_CHANGE": True,
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "USERNAME_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "SERIALIZERS": {
+        "user": "authApp.serializers.UserCreateSerializer",
+        "user_create_password_retype":"authApp.serializers.UserCreateSerializer",
+    },
+}
