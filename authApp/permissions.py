@@ -95,7 +95,7 @@ class IsCustomer(BasePermission):
     
     def has_object_permission(self, request, view, obj):
         # Check if the user is a customer and owns the cart
-        if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.customer == request.user:
+        if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.owner == request.user:
             return True
         raise PermissionDenied(self.message)
 
