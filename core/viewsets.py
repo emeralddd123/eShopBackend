@@ -44,11 +44,11 @@ class ProductViewSet(viewsets.ModelViewSet):
         price = self.request.data.get("price")
         category_list = self.request.data.get("categories")
         img_album = ImageAlbum.objects.create()
-        for image in album['images']:
+        for image in album["images"]:
             Image.objects.create(
-                name=image['name'],
-                image=image['name'],
-                default=image['default'],
+                name=image["name"],
+                image=image["name"],
+                default=image["default"],
                 album=img_album,
             )
         categories = []
@@ -95,7 +95,7 @@ class CartItemViewSet(ModelViewSet):
         return CartItemSerializer
 
     def get_serializer_context(self):
-        return {"cart_id": self.kwargs["cart_id"]}
+        return {"cart_pk": self.kwargs["cart_pk"]}
 
 
 class OrderViewSet(ModelViewSet):
@@ -104,7 +104,7 @@ class OrderViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = CreateOrderSerializer(
-            data=request.data, context={"owner": self.request.user}
+            data=request.data, context={"owner": self.request.user.id}
         )
         serializer.is_valid(raise_exception=True)
         order = serializer.save()

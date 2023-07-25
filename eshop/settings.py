@@ -181,11 +181,17 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "authApp.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_HOST_USER = 'mytestingemailfordjango@gmail.com'
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 LOGIN_URL = "/admin/login/"
 
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
+    "AUTH_HEADER_TYPES": ("Bearer",),
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=6),
 }
 
@@ -194,13 +200,13 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "www.frontend.com/password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "www.frontend.com/username/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "www.frontend/account/activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": False,
+    "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
     "USER_CREATE_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_CONFIRM_RETYPE": True,
     "LOGOUT_ON_PASSWORD_CHANGE": True,
-    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,
-    "USERNAME_RESET_SHOW_EMAIL_NOT_FOUND": True,
+    "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": False,
+    "USERNAME_RESET_SHOW_EMAIL_NOT_FOUND": False,
     "SERIALIZERS": {
         "user": "authApp.serializers.UserCreateSerializer",
         "user_create_password_retype":"authApp.serializers.UserCreateSerializer",

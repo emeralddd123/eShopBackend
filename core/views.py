@@ -86,7 +86,3 @@ class ProductUpdateView(generics.UpdateAPIView):
 class ProductRetrieveView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-
-
-
