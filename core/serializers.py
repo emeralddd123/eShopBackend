@@ -78,13 +78,13 @@ class SummaryProductSerializer(serializers.ModelSerializer):
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = SummaryProductSerializer(many=False)
-    sub_total = serializers.SerializerMethodField(method_name="total")
+    sub_total = serializers.SerializerMethodField(method_name="sub_total")
 
     class Meta:
         model = CartItem
         fields = ["id", "product", "quantity", "sub_total"]
 
-    def total(self, cartitem: CartItem):
+    def sub_total(self, cartitem: CartItem):
         return cartitem.quantity * cartitem.product.price
 
 
@@ -153,21 +153,24 @@ class CartSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = SummaryProductSerializer()
-
+    sub_total = serializers.SerializerMethodField(method_name="sub_totall")
     class Meta:
         model = OrderItem
-        fields = ["id", "product", "quantity"]
+        fields = ["id", "product", "quantity", "sub_total"]
 
+    def sub_totall(self, orderItem:OrderItem):
+        return orderItem.product.price * orderItem.quantity
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
-    total = serializers.SerializerMethodField(method_name='total')
+    total = serializers.SerializerMethodField(method_name="get_total")
     class Meta:
         model = Order
-        fields = ["id", "placed_at", "pending_status", "owner", "items"]
+        fields = ["id", "placed_at", "pending_status", "owner", "items", "total"]
 
-    def total(self, items):
-        return sum(item.product.price * item.get('quantity', 0) for item in items)
+    def get_total(self, order:Order):
+        items = order.items.all()
+        return sum(item.product.price * item.quantity for item in items)
 
 class CreateOrderSerializer(serializers.Serializer):
     cart_id = serializers.UUIDField()
