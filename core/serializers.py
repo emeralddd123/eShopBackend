@@ -78,13 +78,13 @@ class SummaryProductSerializer(serializers.ModelSerializer):
 
 class CartItemSerializer(serializers.ModelSerializer):
     product = SummaryProductSerializer(many=False)
-    sub_total = serializers.SerializerMethodField(method_name="sub_total")
+    sub_total = serializers.SerializerMethodField(method_name="sub_totall")
 
     class Meta:
         model = CartItem
         fields = ["id", "product", "quantity", "sub_total"]
 
-    def sub_total(self, cartitem: CartItem):
+    def sub_totall(self, cartitem: CartItem):
         return cartitem.quantity * cartitem.product.price
 
 

@@ -74,7 +74,7 @@ class Discount(models.Model):
 
 
 class Product(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     name = models.CharField(max_length=200)
@@ -115,6 +115,7 @@ class Order(models.Model):
         (PAYMENT_STATUS_COMPLETE, "Complete"),
         (PAYMENT_STATUS_FAILED, "Failed"),
     ]
+    id = models.UUIDField(primary_key=True,unique=True, default=uuid4())
     placed_at = models.DateTimeField(auto_now_add=True)
     pending_status = models.CharField(
         max_length=50, choices=PAYMENT_STATUS_CHOICES, default="PAYMENT_STATUS_PENDING"
