@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "authApp",
-    "core",
+    "core.apps.CoreConfig",
 ]
 
 MIDDLEWARE = [
