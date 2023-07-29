@@ -60,11 +60,7 @@ class Vendor(User):
     def welcome(self):
         return "Only for Vendor"
 
-class VendorStore(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    vendor_id = models.IntegerField(null=True, blank=True)
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+
 # Create your models here.
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

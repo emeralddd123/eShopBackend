@@ -100,7 +100,7 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         return value
 
     def save(self, **kwargs):
-        cart_id = self.context["cart_pk"]
+        cart_id = self.context["cart_id"]
         product_id = self.validated_data["product_id"]
         quantity = self.validated_data["quantity"]
 

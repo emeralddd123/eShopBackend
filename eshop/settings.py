@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "djoser",
     "authApp",
     "core.apps.CoreConfig",
+    "vendor.apps.VendorConfig",
 ]
 
 MIDDLEWARE = [

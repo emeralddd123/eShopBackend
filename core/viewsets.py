@@ -83,7 +83,7 @@ class CartItemViewSet(ModelViewSet):
 
     def get_queryset(self):
         print(self.kwargs)
-        return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"])
+        return CartItem.objects.filter(cart_id=self.kwargs["cart_id"])
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -95,7 +95,7 @@ class CartItemViewSet(ModelViewSet):
         return CartItemSerializer
 
     def get_serializer_context(self):
-        return {"cart_id": self.kwargs["cart_pk"]}
+        return {"cart_id": self.kwargs["cart_id"]}
 
 
 class OrderViewSet(ModelViewSet):
