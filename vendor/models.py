@@ -15,7 +15,7 @@ class VendorBalance(models.Model):
         return f"{self.vendor.store_name}'s Balance: {self.balance}"
 
 class VendorStore(models.Model):
-    user = models.OneToOneField(Vendor, on_delete=models.CASCADE)
-    vendor_id = models.IntegerField(null=True, blank=True)
+    vendor = models.OneToOneField(Vendor, on_delete=models.CASCADE, related_name="owner")
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+    
