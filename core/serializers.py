@@ -12,6 +12,7 @@ from .models import (
     CartItem,
     Image,
     ImageAlbum,
+    Refund
 )
 from authApp.models import User, Vendor
 
@@ -166,8 +167,8 @@ class OrderSerializer(serializers.ModelSerializer):
     total = serializers.SerializerMethodField(method_name="get_total")
     class Meta:
         model = Order
-        fields = ["id", "placed_at", "pending_status", "owner", "items", "total"]
-
+        fields = ["id", "placed_at", "pending_status","return_status", "owner", "items", "total"]
+        read_only_fields = ["id", "return_status"]
     def get_total(self, order:Order):
         items = order.items.all()
         return sum(item.product.price * item.quantity for item in items)
@@ -203,3 +204,10 @@ class UpdateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ["pending_status"]
+
+
+class RefundOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Refund
+        fields = '__all__'
+        read_only_fields = ["id"]

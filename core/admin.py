@@ -8,7 +8,8 @@ from .models import (
     CartItem,
     Cart,
     ImageAlbum,
-    Image
+    Image,
+    Refund
 )
 
 # Register your models here.
@@ -59,6 +60,7 @@ admin.site.register(OrderItem)
 admin.site.register(Discount)
 admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem)
+admin.site.register(Refund)
 
 
     

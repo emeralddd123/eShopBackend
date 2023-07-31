@@ -4,6 +4,7 @@ from uuid import uuid4
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .utils import generate_sku, get_upload_path
+from vendor.utils import updateProductInventory, updateVendorBalance
 from django.utils import timezone
 
 
@@ -121,12 +122,17 @@ class Order(models.Model):
         max_length=50, choices=PAYMENT_STATUS_CHOICES, default="PAYMENT_STATUS_PENDING"
     )
     owner = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    processed = models.BooleanField(default=False)
+    return_status = models.BooleanField(default=False)
 
     def __str__(self):
         return self.pending_status
 
     def save(self, *args, **kwargs):
-        # self.totalling()
+        if self.pending_status == "PAYMENT_STATUS_COMPLETE" and self.processed == False:
+            updateProductInventory(self)
+            updateVendorBalance(self)
+            self.processed==True 
         super().save()
 
     def __str__(self):
@@ -174,3 +180,10 @@ class CartItem(models.Model):
         related_name="cartitems",
     )
     quantity = models.PositiveIntegerField(default=0)
+
+
+class Refund(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4())
+    order = models.ForeignKey(Order,unique=True,on_delete=models.CASCADE)
+    complaint = models.TextField(blank=False, null=False)
+    
