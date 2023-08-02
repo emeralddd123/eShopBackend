@@ -1,8 +1,8 @@
-import os
-import uuid
-import random
+import os, uuid, random
+from decimal import Decimal
 from django.db import transaction
 from vendor.models import VendorBalance
+
 
 # Create your views here.
 def generate_sku(product_name):
@@ -30,12 +30,11 @@ def get_upload_path(instance, filename):
     return os.path.join("images/products", timestamp_subdir, unique_filename)
 
 
-
 def returnedOrderResolution(order):
-    #function to return the items in a returned to Inventory and also deduct
-    #the money from the order from respective vendor
-    #will be expecting order_id with paid status complete as a parameter
-    
+    # function to return the items in a returned to Inventory and also deduct
+    # the money from the order from respective vendor
+    # will be expecting order_id with paid status complete as a parameter
+
     orderitems = order.items.all()
     with transaction.atomic():
         for orderitem in orderitems:
@@ -45,13 +44,11 @@ def returnedOrderResolution(order):
             vendor_id = orderitem.product.vendor.id
             product_price = orderitem.product.price
             product.save()
-            
-            commisioned_price = product_price*quantity *0.95
+
+            commisioned_price = product_price * quantity * Decimal("0.95")
             vendor_balance = VendorBalance.objects.get(vendor=vendor_id)
             vendor_balance.balance -= commisioned_price
             vendor_balance.save()
-            
-        order.return_status=True
+
+        order.return_status = True
         order.save()
-        
-    

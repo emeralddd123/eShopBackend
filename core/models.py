@@ -107,19 +107,19 @@ class Product(models.Model):
 
 
 class Order(models.Model):
-    PAYMENT_STATUS_PENDING = "P"
-    PAYMENT_STATUS_COMPLETE = "C"
-    PAYMENT_STATUS_FAILED = "F"
+    PENDING = "PENDING"
+    COMPLETE = "COMPLETE"
+    FAILED = "FAILED"
 
     PAYMENT_STATUS_CHOICES = [
-        (PAYMENT_STATUS_PENDING, "Pending"),
-        (PAYMENT_STATUS_COMPLETE, "Complete"),
-        (PAYMENT_STATUS_FAILED, "Failed"),
+        (PENDING, "PENDING"),
+        (COMPLETE, "COMPLETE"),
+        (FAILED, "FAILED"),
     ]
     id = models.UUIDField(primary_key=True,unique=True, default=uuid4())
     placed_at = models.DateTimeField(auto_now_add=True)
     pending_status = models.CharField(
-        max_length=50, choices=PAYMENT_STATUS_CHOICES, default="PAYMENT_STATUS_PENDING"
+        max_length=50, choices=PAYMENT_STATUS_CHOICES, default="PENDING"
     )
     owner = models.ForeignKey(Customer, on_delete=models.PROTECT)
     processed = models.BooleanField(default=False)
@@ -128,17 +128,14 @@ class Order(models.Model):
     def __str__(self):
         return self.pending_status
 
-    def save(self, *args, **kwargs):
-        if self.pending_status == "PAYMENT_STATUS_COMPLETE" and self.processed == False:
-            updateProductInventory(self)
-            updateVendorBalance(self)
-            self.processed==True 
+    def save(self, *args, **kwargs):            
         super().save()
 
     def __str__(self):
         return "{} made an order of {} at {}".format(
             self.owner, self.pending_status, self.placed_at
         )
+
 
 
 class OrderItem(models.Model):

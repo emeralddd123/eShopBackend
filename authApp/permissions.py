@@ -2,7 +2,7 @@ from rest_framework.permissions import BasePermission
 from rest_framework.exceptions import PermissionDenied
 from .models import User
 
-
+from rest_framework.permissions import IsAuthenticated
 
 class IsVendorOrReadOnly(BasePermission):
     message = "Only Vendors Are Allowed to perform this action"
@@ -31,7 +31,7 @@ class IsVendorOrReadOnly(BasePermission):
      
 
 class IsCustomerOrReadOnly(BasePermission):
-    message = "Only Customers Are Allowed to perfor this action"
+    message = "Only Customers Are Allowed to perform this action"
     
     def has_permission(self, request, view):
         # Allow GET, HEAD, and OPTIONS requests to all users
@@ -48,9 +48,9 @@ class IsCustomerOrReadOnly(BasePermission):
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
 
-        # Check if the user is a customer and owns the cart
-        if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.customer == request.user:
-            return True
+        # # Check if the user is a customer and owns the cart
+        # if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.customer == request.user:
+        #     return True
         raise PermissionDenied(self.message)
 
 class IsAdminOrReadOnly(BasePermission):
@@ -85,19 +85,21 @@ class IsVendor(BasePermission):
      
 
 class IsCustomer(BasePermission):
-    message = "Only Customers Are Allowed to perfor this action"
+    message = "Only Customers Are Allowed to perform this action"
     
     def has_permission(self, request, view):
         # Check if the user is a customer
-        if request.user.is_authenticated and request.user.role=="CUSTOMER":
+        is_user = IsAuthenticated().has_permission(request, view)
+        is_customer = request.user.role == "CUSTOMER"
+        if is_user and is_customer:
             return True
         raise PermissionDenied(self.message)
     
-    def has_object_permission(self, request, view, obj):
-        # Check if the user is a customer and owns the cart
-        if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.owner == request.user:
-            return True
-        raise PermissionDenied(self.message)
+    # def has_object_permission(self, request, view, obj):
+    #     # Check if the user is a customer and owns the cart
+    #     if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.owner == request.user:
+    #         return True
+        #raise PermissionDenied(self.message)
 
 class IsAdmin(BasePermission):
     message = "Only Admins Are Allowed to perform this action"

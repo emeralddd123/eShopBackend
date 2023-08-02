@@ -100,7 +100,7 @@ class CartItemViewSet(ModelViewSet):
 
 class OrderViewSet(ModelViewSet):
     http_method_names = ["get", "patch", "post", "delete", "options", "head"]
-    permission_classes = [IsCustomer]
+    permission_classes = [IsAuthenticated]  #TODO: will change this later to IsCustomer
 
     def create(self, request, *args, **kwargs):
         serializer = CreateOrderSerializer(

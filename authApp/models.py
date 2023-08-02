@@ -56,6 +56,14 @@ class Vendor(User):
 
     class Meta:
         proxy = True
+        
+    def save(self, *args, **kwargs):
+        from vendor.models import VendorBalance
+        # Call the base class's save() method
+        super(Vendor, self).save(*args, **kwargs)
+
+        # Create VendorBalance instance if it doesn't exist
+        VendorBalance.objects.get_or_create(vendor=self, defaults={'balance': 0})
 
     def welcome(self):
         return "Only for Vendor"
