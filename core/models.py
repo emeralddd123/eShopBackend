@@ -4,7 +4,6 @@ from uuid import uuid4
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .utils import generate_sku, get_upload_path
-from vendor.utils import updateProductInventory, updateVendorBalance
 from django.utils import timezone
 
 

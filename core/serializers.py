@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.db import transaction
+from decimal import Decimal
 
 
 from .models import (
@@ -15,6 +16,8 @@ from .models import (
     Refund
 )
 from authApp.models import User, Vendor
+
+from vendor.models import VendorBalance
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -190,13 +193,39 @@ class CreateOrderSerializer(serializers.Serializer):
             cart_id = self.validated_data["cart_id"]
             user_id = self.context["owner"]
             order = Order.objects.create(owner_id=user_id)
+
             cartitems = CartItem.objects.filter(cart_id=cart_id)
-            orderitems = [
-                OrderItem(order=order, product=item.product, quantity=item.quantity)
-                for item in cartitems
-            ]
+            orderitems = []
+
+            for item in cartitems:
+                product = item.product
+                quantity_ordered = item.quantity
+
+                # Check if there's enough quantity in the inventory
+                if product.quantity < quantity_ordered:
+                    raise serializers.ValidationError(
+                        f"Insufficient quantity for product: {product.name}"
+                    )
+
+                # Create the order item
+                order_item = OrderItem(order=order, product=product, quantity=quantity_ordered)
+                orderitems.append(order_item)
+
+                # Deduct the quantity from the product inventory
+                product.quantity -= quantity_ordered
+                product.save()
+                
+                # Update the vendor's balance
+                vendor = product.vendor
+                vendor_balance = VendorBalance.objects.get(vendor=vendor)
+                total_sale_amount = product.price * quantity_ordered
+                vendor_balance.balance += total_sale_amount * Decimal('0.95')  #5% commision goes to the management
+                vendor_balance.save()
+
             OrderItem.objects.bulk_create(orderitems)
+
             Cart.objects.filter(id=cart_id).delete()
+
             return order
 
 
