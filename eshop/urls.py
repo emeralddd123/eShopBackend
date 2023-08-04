@@ -33,6 +33,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("authApp.urls")),
     path("", include("core.urls")),
+    path("vendor/", include("vendor.urls")),
     path("docs", schema_view.with_ui('swagger', cache_timeout=0),
         name="swagger-schema")
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
