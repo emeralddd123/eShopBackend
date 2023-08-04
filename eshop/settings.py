@@ -181,7 +181,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "authApp.User"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  #TODO --Should Work Around making the emails to be sent in background 
 EMAIL_HOST = 'smtp-relay.brevo.com'
 EMAIL_HOST_USER = 'mytestingemailfordjango@gmail.com'
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
