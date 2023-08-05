@@ -20,9 +20,11 @@ class VendorBalanceSerializer(ModelSerializer):
         fields = ['balance', 'updated_at']
         read_only_fields = ['balance', 'updated_at']
         
+    
         
         
-class SummaryVendorStoreSerializer(ModelSerializer):
+        
+class VendorStoreSerializer(ModelSerializer):
     
     class Meta:
         model = VendorStore
@@ -30,10 +32,10 @@ class SummaryVendorStoreSerializer(ModelSerializer):
         read_only_fields = ['vendor',]
         
         
-class VendorInfoSerializer(Serializer):
-    vendor = sVendorSerializer()
-    balance = VendorBalanceSerializer()
-    store_info = SummaryVendorStoreSerializer()
+# class VendorInfoSerializer(Serializer):
+#     vendor = sVendorSerializer()
+#     balance = VendorBalanceSerializer()
+#     store_info = SummaryVendorStoreSerializer()
     
-    class Meta:
-        fields = ['vendor','balance', 'store_info']
+#     class Meta:
+#         fields = ['vendor','balance', 'store_info']

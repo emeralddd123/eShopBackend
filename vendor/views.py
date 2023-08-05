@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.exceptions import NotAuthenticated
-from .serializers import SummaryVendorStoreSerializer, VendorBalanceSerializer, VendorInfoSerializer
+from .serializers import VendorStoreSerializer, VendorBalanceSerializer
 from .models import VendorBalance, VendorStore
 
 class VendorBalanceView(generics.RetrieveAPIView):
@@ -17,12 +17,25 @@ class VendorBalanceView(generics.RetrieveAPIView):
         else: 
             raise NotAuthenticated
     
-class VendorInfoView(generics.RetrieveAPIView):
-    serializer_class = VendorInfoSerializer
+class VendorStoreView(generics.CreateAPIView, generics.RetrieveAPIView):
+    serializer_class = VendorStoreSerializer
     
-    def get_object(self):
+    def get_queryset(self):
+        vendor_store = VendorStore.objects.filter(vendor=self.request.user).first()
+        return vendor_store
+    
+    def perform_create(self, serializer):
         vendor = self.request.user
-        if vendor.is_authenticated:
-            return vendor
-        else: 
-            raise NotAuthenticated
+        serializer.save(vendor=vendor)
+    
+    
+# class VendorInfoView(generics.RetrieveAPIView):
+#     serializer_class = VendorInfoSerializer
+    
+#     def get_object(self):
+#         vendor = self.request.user
+#         if vendor.is_authenticated:
+#             return vendor
+#         else: 
+#             raise NotAuthenticated
+
