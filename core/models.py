@@ -180,6 +180,6 @@ class CartItem(models.Model):
 
 class Refund(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4())
-    order = models.ForeignKey(Order,unique=True,on_delete=models.CASCADE)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
     complaint = models.TextField(blank=False, null=False)
     
