@@ -1,7 +1,9 @@
 FROM python:3.11
 
-ADD . .
+RUN mkdir '/home/app'
 
-RUN pip install -r "requirements.txt"
+ADD ./app ./home/app
 
-CMD [ "python", "manage.py",  "runserver", "0.0.0.0:8000"]
+RUN pip install -r "/home/app/requirements.txt"
+
+CMD [ "python", "/home/app/manage.py",  "runserver", "0.0.0.0:8000"]

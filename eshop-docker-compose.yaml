@@ -1,0 +1,17 @@
+version: '1'
+services:
+  postgresdb:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=usman123
+      - POSTGRES_DB=eshop
+      
+  djangoapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
