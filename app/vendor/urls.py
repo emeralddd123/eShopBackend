@@ -1,8 +1,9 @@
 from django.urls import path, include
-from .views import VendorBalanceView, VendorStoreView
+from .views import VendorView, VendorStoreView, VendorListView
 urlpatterns = [
-   path('balance', VendorBalanceView.as_view(), name='vendor-balance'),
+   path('info', VendorView.as_view(), name='vendor-info'),
    #path('info', VendorInfoView.as_view(), name='vendor-info'),
-   path('store/<pk>', VendorStoreView.as_view(), name='vendor-store')
+   path('store/<int:pk>', VendorStoreView.as_view(), name='vendor-store'),
+   path('store', VendorListView.as_view(), name='vendor-list')
 
 ]

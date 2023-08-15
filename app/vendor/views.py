@@ -1,41 +1,62 @@
 from rest_framework import generics
-from rest_framework.exceptions import NotAuthenticated
+from django.forms import model_to_dict
+from rest_framework.exceptions import NotAuthenticated, MethodNotAllowed
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .serializers import VendorStoreSerializer, VendorBalanceSerializer
 from .models import VendorBalance, VendorStore
+from core.models import Product
+from core.serializers import SummaryProductSerializer, ProductSerializer
 
-class VendorBalanceView(generics.RetrieveAPIView):
-    serializer_class = VendorBalanceSerializer
-    
-    def get_object(self):
-        vendor = self.request.user # Assuming you have a OneToOneField for the vendor in your User model
-        if vendor.is_authenticated:
-            obj = generics.get_object_or_404(VendorBalance, vendor=vendor)
 
-            self.check_object_permissions(self.request, obj)  # Optional: Check object-level permissions if needed
-
-            return obj
-        else: 
-            raise NotAuthenticated
-    
-class VendorStoreView(generics.CreateAPIView, generics.RetrieveAPIView):
+class VendorView(generics.RetrieveUpdateAPIView):
     serializer_class = VendorStoreSerializer
-    
-    def get_queryset(self):
-        vendor_store = VendorStore.objects.filter(vendor=self.request.user).first()
-        return vendor_store
-    
-    def perform_create(self, serializer):
-        vendor = self.request.user
-        serializer.save(vendor=vendor)
-    
-    
-# class VendorInfoView(generics.RetrieveAPIView):
-#     serializer_class = VendorInfoSerializer
-    
-#     def get_object(self):
-#         vendor = self.request.user
-#         if vendor.is_authenticated:
-#             return vendor
-#         else: 
-#             raise NotAuthenticated
+    permission_classes = [IsAuthenticated]
 
+    def get_object(self):
+        vendor = (
+            self.request.user
+        )  # Assuming you have a OneToOneField for the vendor in your User model
+        if vendor.is_authenticated and vendor.role == "VENDOR":
+            balance = generics.get_object_or_404(VendorBalance, vendor=vendor)
+
+            self.check_object_permissions(
+                self.request, balance
+            )  # Optional: Check object-level permissions if needed
+            vendor_store = VendorStore.objects.filter(vendor=vendor).first()
+            print(vendor_store)
+            store_data = VendorStoreSerializer(vendor_store).data
+            balance_data = VendorBalance(balance).data
+
+            return Response(
+                content_type="application/json",
+                data={"store": store_data, "balance": balance_data},
+            )
+        else:
+            return Response(
+                content_type="application/json",
+                status=403,
+                data="Only Vendor Can Perform This Task",
+            )
+
+
+class VendorStoreView(generics.RetrieveAPIView):
+    serializer_class = VendorStoreSerializer
+    queryset = VendorStore.objects.all()
+    lookup_field = "pk"
+
+    def get(self, request, pk):
+        vendor_store = VendorStore.objects.get()
+        vendor_products = Product.objects.filter(vendor=vendor_store.vendor)
+        print(vendor_products)
+        store_data = VendorStoreSerializer(vendor_store)
+        store_products = ProductSerializer(vendor_products, many=True)
+        return Response(
+            content_type="application/json",
+            data={"store": store_data.data, "products": store_products.data},
+        )
+
+
+class VendorListView(generics.ListAPIView):
+    serializer_class = VendorStoreSerializer
+    queryset = VendorStore.objects.all()
