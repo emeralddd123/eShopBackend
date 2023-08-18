@@ -1,6 +1,6 @@
 from rest_framework import generics
 from django.forms import model_to_dict
-from rest_framework.exceptions import NotAuthenticated, MethodNotAllowed
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import VendorStoreSerializer, VendorBalanceSerializer
@@ -14,29 +14,22 @@ class VendorView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        vendor = (
-            self.request.user
-        )  # Assuming you have a OneToOneField for the vendor in your User model
+        vendor = self.request.user
         if vendor.is_authenticated and vendor.role == "VENDOR":
             balance = generics.get_object_or_404(VendorBalance, vendor=vendor)
 
-            self.check_object_permissions(
-                self.request, balance
-            )  # Optional: Check object-level permissions if needed
+            self.check_object_permissions(self.request, balance)
             vendor_store = VendorStore.objects.filter(vendor=vendor).first()
             print(vendor_store)
             store_data = VendorStoreSerializer(vendor_store).data
             balance_data = VendorBalance(balance).data
 
             return Response(
-                content_type="application/json",
                 data={"store": store_data, "balance": balance_data},
             )
         else:
-            return Response(
-                content_type="application/json",
-                status=403,
-                data="Only Vendor Can Perform This Task",
+            raise PermissionDenied(
+                detail="Only Vendor Are Allowed to perfom this action"
             )
 
 
@@ -52,7 +45,6 @@ class VendorStoreView(generics.RetrieveAPIView):
         store_data = VendorStoreSerializer(vendor_store)
         store_products = ProductSerializer(vendor_products, many=True)
         return Response(
-            content_type="application/json",
             data={"store": store_data.data, "products": store_products.data},
         )
 

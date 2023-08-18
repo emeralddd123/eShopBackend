@@ -29,7 +29,7 @@ class VendorStoreSerializer(ModelSerializer):
     class Meta:
         model = VendorStore
         fields = ['name', 'description']
-        read_only_fields = ['vendor',]
+        read_only_fields = ['vendor']
         
         
 # class VendorInfoSerializer(Serializer):
