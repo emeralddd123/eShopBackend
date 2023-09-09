@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.mixins import (
     CreateModelMixin,
     RetrieveModelMixin,
@@ -76,13 +76,26 @@ class CartViewSet(
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     permission_classes = [IsCustomerOrReadOnly]
+    
+    def create(self, serializer):
+        user = self.request.user
+        if user.cart:
+            serializer = CartSerializer(user.cart)
+            message='User has an existing Cart'
+            return Response({'message':message,'data':serializer.data}, status=208)
+        cart = Cart(user=user)
+        cart.save()
+        serializer = CartSerializer(cart)
+        return Response(serializer.data, status=201)
 
 
 class CartItemViewSet(ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
+    
+    def get_serializer_context(self):
+            return {"cart_id": self.kwargs["cart_pk"]}
 
     def get_queryset(self):
-        print(self.kwargs)
         return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"])
 
     def get_serializer_class(self):
@@ -94,8 +107,7 @@ class CartItemViewSet(ModelViewSet):
 
         return CartItemSerializer
 
-    def get_serializer_context(self):
-        return {"cart_id": self.kwargs["cart_pk"]}
+    
 
 
 class OrderViewSet(ModelViewSet):

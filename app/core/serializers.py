@@ -13,9 +13,8 @@ from .models import (
     CartItem,
     Image,
     ImageAlbum,
-    Refund
+    Refund,
 )
-from authApp.models import User, Vendor
 
 from vendor.models import VendorBalance
 
@@ -26,11 +25,14 @@ class ImageSerializer(serializers.ModelSerializer):
         # fields = ['id', 'name', 'image', 'default']
         fields = "__all__"
 
+
 class SummaryImageSerializer(serializers.ModelSerializer):
     default = serializers.BooleanField()
+
     class Meta:
-        model=Image
-        fields = ['name', 'image', 'default']
+        model = Image
+        fields = ["name", "image", "default"]
+
 
 class ImageAlbumSerializer(serializers.ModelSerializer):
     images = SummaryImageSerializer(many=True)
@@ -71,7 +73,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "price",
             "categories",
         ]
-        read_only_fields = ["id","vendor", "sku"]
+        read_only_fields = ["id", "vendor", "sku"]
 
 
 class SummaryProductSerializer(serializers.ModelSerializer):
@@ -148,6 +150,7 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ["id", "items", "grand_total"]
+        # read_only_fields = ["id"]
 
     def main_total(self, cart: Cart):
         items = cart.items.all()
@@ -158,23 +161,36 @@ class CartSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     product = SummaryProductSerializer()
     sub_total = serializers.SerializerMethodField(method_name="sub_totall")
+
     class Meta:
         model = OrderItem
         fields = ["id", "product", "quantity", "sub_total"]
 
-    def sub_totall(self, orderItem:OrderItem):
+    def sub_totall(self, orderItem: OrderItem):
         return orderItem.product.price * orderItem.quantity
+
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     total = serializers.SerializerMethodField(method_name="get_total")
+
     class Meta:
         model = Order
-        fields = ["id", "placed_at", "pending_status","return_status", "owner", "items", "total"]
+        fields = [
+            "id",
+            "placed_at",
+            "pending_status",
+            "return_status",
+            "owner",
+            "items",
+            "total",
+        ]
         read_only_fields = ["id", "return_status"]
-    def get_total(self, order:Order):
+
+    def get_total(self, order: Order):
         items = order.items.all()
         return sum(item.product.price * item.quantity for item in items)
+
 
 class CreateOrderSerializer(serializers.Serializer):
     cart_id = serializers.UUIDField()
@@ -208,18 +224,22 @@ class CreateOrderSerializer(serializers.Serializer):
                     )
 
                 # Create the order item
-                order_item = OrderItem(order=order, product=product, quantity=quantity_ordered)
+                order_item = OrderItem(
+                    order=order, product=product, quantity=quantity_ordered
+                )
                 orderitems.append(order_item)
 
                 # Deduct the quantity from the product inventory
                 product.quantity -= quantity_ordered
                 product.save()
-                
+
                 # Update the vendor's balance
                 vendor = product.vendor
                 vendor_balance = VendorBalance.objects.get(vendor=vendor)
                 total_sale_amount = product.price * quantity_ordered
-                vendor_balance.balance += total_sale_amount * Decimal('0.95')  #5% commision goes to the management
+                vendor_balance.balance += total_sale_amount * Decimal(
+                    "0.95"
+                )  # 5% commision goes to the management
                 vendor_balance.save()
 
             OrderItem.objects.bulk_create(orderitems)
@@ -238,5 +258,5 @@ class UpdateOrderSerializer(serializers.ModelSerializer):
 class RefundOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Refund
-        fields = '__all__'
+        fields = "__all__"
         read_only_fields = ["id"]
