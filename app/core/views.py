@@ -1,20 +1,12 @@
-from django.shortcuts import render, get_object_or_404
-from rest_framework import generics, pagination, status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, authentication_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, pagination
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.serializers import ValidationError
-from typing import List
-from authApp.models import Vendor, User
-from .models import Product, ProductCategory, Order, OrderItem
+from .models import ProductCategory, Order, Refund
 from .serializers import (
-    ProductSerializer,
     ProductCategorySerializer,
     RefundOrderSerializer,
 )
-from django.forms.models import model_to_dict
-
+from authApp.permissions import IsCustomerOrReadOnly
 
 class CategoryListView(generics.ListAPIView):
     queryset = ProductCategory.objects.all()
@@ -26,7 +18,7 @@ class CategoryListView(generics.ListAPIView):
         context["request"] = self.request
         return context
 
-class RefundOrderView(generics.CreateAPIView):
+class RefundOrderView(generics.CreateAPIView, generics.ListAPIView):
     """Takes the two set of parameters: Order and Complaint
     
     Keyword arguments:
@@ -35,22 +27,23 @@ class RefundOrderView(generics.CreateAPIView):
     Return: status code 200
     """
     
-    queryset = Order.objects.all()
+    queryset = Refund.objects.all()
     serializer_class = RefundOrderSerializer
+    permission_classes = [IsCustomerOrReadOnly]
 
     def perform_create(self, serializer):
-        # Ensure that the user can only log a refund request for their own orders
         user = self.request.user
-        order_id = self.request.data.get('order_id') 
-
+        order_id = self.request.data.get('order') 
         try:
             order = Order.objects.get(id=order_id)
         except Order.DoesNotExist:
-            # Handle case when the order_id does not exist
             raise ValidationError("Invalid Order ID")
 
-        if order.user != user:
-            raise ValidationError("You can only log a refund request for your own orders.")
+        if order.owner != user:       # To make that user can only log a refund request for their own orders
+            raise PermissionDenied("You do not have permission to log a complaint on this order.")
 
-        serializer.save(user=user)
+        serializer.save()
+        
+    # def get(self):
+    #     user_refunds = Refund.objects.filter()
         

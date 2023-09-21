@@ -30,6 +30,8 @@ class IsVendorOrReadOnly(BasePermission):
         raise PermissionDenied(self.message)
      
 
+from rest_framework.permissions import BasePermission
+
 class IsCustomerOrReadOnly(BasePermission):
     message = "Only Customers Are Allowed to perform this action"
     
@@ -38,20 +40,20 @@ class IsCustomerOrReadOnly(BasePermission):
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
 
-        # Check if the user is a customer
-        if request.user.is_authenticated and request.user.role=="CUSTOMER":
-            return True
-        raise PermissionDenied(self.message)
-    
-    def has_object_permission(self, request, view, obj):
-        # Allow GET, HEAD, and OPTIONS requests to all users
-        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+        if request.user.is_authenticated and request.user.role == "CUSTOMER":
             return True
 
-        # # Check if the user is a customer and owns the cart
-        # if request.user.is_authenticated and request.user.role=="CUSTOMER" and obj.customer == request.user:
-        #     return True
-        raise PermissionDenied(self.message)
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated and request.user.role == "CUSTOMER":
+            try:
+                return obj.owner == request.user      #TODO: a mees caused by my inconsistent naming, will fix later
+            except AttributeError as e:
+                return obj.user == request.user
+        
+        return False 
+
 
 class IsAdminOrReadOnly(BasePermission):
     message = "Only Admins Are Allowed to perform this action"

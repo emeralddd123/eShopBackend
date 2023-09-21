@@ -7,30 +7,23 @@ from .serializers import VendorStoreSerializer, VendorBalanceSerializer
 from .models import VendorBalance, VendorStore
 from core.models import Product
 from core.serializers import SummaryProductSerializer, ProductSerializer
+from authApp.permissions import IsVendorOrReadOnly, IsVendor
 
 
 class VendorView(generics.RetrieveUpdateAPIView):
     serializer_class = VendorStoreSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsVendorOrReadOnly]
 
     def get_object(self):
         vendor = self.request.user
-        if vendor.is_authenticated and vendor.role == "VENDOR":
-            balance = generics.get_object_or_404(VendorBalance, vendor=vendor)
+        vendor_store = VendorStore.objects.get(vendor=vendor)
+        # store_data = VendorStoreSerializer(vendor_store).data
 
-            self.check_object_permissions(self.request, balance)
-            vendor_store = VendorStore.objects.filter(vendor=vendor).first()
-            print(vendor_store)
-            store_data = VendorStoreSerializer(vendor_store).data
-            balance_data = VendorBalance(balance).data
+        # vendor_balance = VendorBalance.objects.get(vendor=vendor)
+        # balance_data = VendorBalanceSerializer(vendor_balance).data
 
-            return Response(
-                data={"store": store_data, "balance": balance_data},
-            )
-        else:
-            raise PermissionDenied(
-                detail="Only Vendor Are Allowed to perfom this action"
-            )
+        # response_data = {"store_data": store_data, "balance_data": balance_data}
+        return vendor_store
 
 
 class VendorStoreView(generics.RetrieveAPIView):
@@ -52,3 +45,15 @@ class VendorStoreView(generics.RetrieveAPIView):
 class VendorListView(generics.ListAPIView):
     serializer_class = VendorStoreSerializer
     queryset = VendorStore.objects.all()
+
+
+class VendorBalanceView(generics.RetrieveAPIView):
+    serializer_class = VendorBalanceSerializer
+    queryset = VendorBalance.objects.all()
+    permission_classes = [IsVendor]
+    
+    def get_object(self):
+        vendor = self.request.user
+        vendor_balance = VendorBalance.objects.get(vendor=vendor)
+        return vendor_balance
+    

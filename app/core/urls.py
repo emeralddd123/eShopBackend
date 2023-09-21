@@ -19,7 +19,7 @@ urlpatterns = [
 
     path('', include(router.urls)),
     path('', include(cart_router.urls)),
-    path('request-order', RefundOrderView.as_view(), name='request-refund')
+    path('refund/', RefundOrderView.as_view(), name='refund-order')
 
 ]
 

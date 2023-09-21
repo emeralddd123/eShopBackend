@@ -70,6 +70,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=201)
 
 
+from rest_framework import status
+from rest_framework.response import Response
+
 class CartViewSet(
     CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
 ):
@@ -77,20 +80,25 @@ class CartViewSet(
     serializer_class = CartSerializer
     permission_classes = [IsCustomerOrReadOnly]
     
-    def create(self, serializer):
+    def create(self, request):
         user = self.request.user
-        if user.cart:
-            serializer = CartSerializer(user.cart)
-            message='User has an existing Cart'
-            return Response({'message':message,'data':serializer.data}, status=208)
+        existing_cart = Cart.objects.filter(user=user).first()
+        if existing_cart:
+            serializer = CartSerializer(existing_cart)
+            message = 'User has an existing Cart'
+            return Response({'message': message, 'data': serializer.data}, status=status.HTTP_208_ALREADY_REPORTED)
+        
         cart = Cart(user=user)
         cart.save()
+        
         serializer = CartSerializer(cart)
-        return Response(serializer.data, status=201)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 class CartItemViewSet(ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
+    permission_classes = [IsCustomerOrReadOnly]
     
     def get_serializer_context(self):
             return {"cart_id": self.kwargs["cart_pk"]}
@@ -112,7 +120,7 @@ class CartItemViewSet(ModelViewSet):
 
 class OrderViewSet(ModelViewSet):
     http_method_names = ["get", "patch", "post", "delete", "options", "head"]
-    permission_classes = [IsAuthenticated]  #TODO: will change this later to IsCustomer
+    permission_classes = [IsCustomerOrReadOnly] 
 
     def create(self, request, *args, **kwargs):
         serializer = CreateOrderSerializer(
