@@ -29,8 +29,15 @@ SECRET_KEY =  os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']   #unsafe
 
+CSRF_TRUSTED_ORIGINS = ['*']  #unsafe
+
+
+SECURE_SSL_REDIRECT =True
+
+# Set session cookies to be transmitted only over HTTPS
+SESSION_COOKIE_SECURE = True
 
 # Application definition
 
@@ -53,6 +60,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -81,7 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "eshop.wsgi.application"
 
-
+CSRF_COOKIE_SECURE = True
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -161,6 +169,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

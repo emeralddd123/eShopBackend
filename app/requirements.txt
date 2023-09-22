@@ -65,3 +65,5 @@ user-agents
 vine
 wcwidth
 wrapt
+gunicorn
+whitenoise
