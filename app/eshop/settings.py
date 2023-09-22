@@ -31,7 +31,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']   #unsafe
 
-CSRF_TRUSTED_ORIGINS = ['*']  #unsafe
+#CSRF_TRUSTED_ORIGINS = ['*']  #unsafe
 
 
 SECURE_SSL_REDIRECT =True
@@ -42,8 +42,14 @@ SESSION_COOKIE_SECURE = True
 # Application definition
 
 INSTALLED_APPS = [
+    
+    "authApp",
+    "core",
+    "vendor",
+    
     "django.contrib.admin",
     "django.contrib.auth",
+    
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -53,9 +59,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
-    "authApp.apps.AuthappConfig",
-    "core.apps.CoreConfig",
-    "vendor.apps.VendorConfig",
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -165,6 +170,8 @@ STATIC_URL = "static/"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
