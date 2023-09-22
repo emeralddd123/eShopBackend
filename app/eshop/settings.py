@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
-    "authApp",
+    "authApp.apps.AuthappConfig",
     "core.apps.CoreConfig",
     "vendor.apps.VendorConfig",
 ]
