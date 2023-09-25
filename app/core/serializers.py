@@ -12,7 +12,6 @@ from .models import (
     Cart,
     CartItem,
     Image,
-    ImageAlbum,
     Refund,
 )
 
@@ -22,7 +21,7 @@ from vendor.models import VendorBalance
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        # fields = ['id', 'name', 'image', 'default']
+        # fields = ['id', 'title', 'image', 'default']
         fields = "__all__"
 
 
@@ -31,15 +30,8 @@ class SummaryImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ["name", "image", "default"]
+        fields = ["title", "image", "default"]
 
-
-class ImageAlbumSerializer(serializers.ModelSerializer):
-    images = SummaryImageSerializer(many=True)
-
-    class Meta:
-        model = ImageAlbum
-        fields = ["id", "images"]
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
@@ -52,13 +44,13 @@ class ProductCategorySerializer(serializers.ModelSerializer):
 class SummaryProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCategory
-        fields = ["id"]
+        fields = ["id", "name"]
         read_only = True
 
 
 class ProductSerializer(serializers.ModelSerializer):
     categories = SummaryProductCategorySerializer(many=True)
-    album = ImageAlbumSerializer(many=False)
+    images = ImageSerializer(many=True)
 
     class Meta:
         model = Product
@@ -67,13 +59,21 @@ class ProductSerializer(serializers.ModelSerializer):
             "vendor",
             "quantity",
             "name",
-            "album",
+            "images",
             "desc",
             "sku",
             "price",
             "categories",
         ]
         read_only_fields = ["id", "vendor", "sku"]
+        
+    def create(self, validated_data):
+        images = validated_data.pop('images')
+        product = Product.objects.create(**validated_data)
+        for image in images:
+            new_image = Image.objects.create(product=product, image=image)
+            new_image.save()
+        return product
 
 
 class SummaryProductSerializer(serializers.ModelSerializer):

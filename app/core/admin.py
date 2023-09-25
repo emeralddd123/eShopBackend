@@ -7,7 +7,6 @@ from .models import (
     Discount,
     CartItem,
     Cart,
-    ImageAlbum,
     Image,
     Refund
 )
@@ -16,10 +15,7 @@ from .models import (
 class ImageInline(admin.StackedInline):
     model = Image
     extra = 1
-    
-class ImageAlbumAdmin(admin.ModelAdmin):
-    model = ImageAlbum
-    inlines = [ImageInline]
+
     
 
 class ProductAdmin(admin.ModelAdmin):
@@ -31,6 +27,7 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'sku':('name',)}
     raw_id_fields = ['vendor']
     readonly_fields = ['created_at']
+    inlines = [ImageInline]
 
 class CartItemInline(admin.StackedInline):
     model = CartItem
@@ -52,7 +49,6 @@ class OrderAdmin(admin.ModelAdmin):
     
     
 admin.site.register(Image)
-admin.site.register(ImageAlbum, ImageAlbumAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductCategory)
 admin.site.register(Order, OrderAdmin)

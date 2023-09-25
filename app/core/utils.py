@@ -24,10 +24,8 @@ def get_unique_filename(instance, filename):
 
 
 def get_upload_path(instance, filename):
-    # Custom function to determine the upload path for the image
-    timestamp_subdir = instance.created_at.strftime("%Y/%m/%d")
     unique_filename = get_unique_filename(instance, filename)
-    return os.path.join("images/products", timestamp_subdir, unique_filename)
+    return os.path.join("images/products", unique_filename)
 
 
 def returnedOrderResolution(order):

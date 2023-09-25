@@ -27,17 +27,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY =   env("SECRET_KEY")
 SECRET_KEY =  os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']   #unsafe
 
 #CSRF_TRUSTED_ORIGINS = ['*']  #unsafe
 
+if DEBUG == False:
+    SECURE_SSL_REDIRECT =True
+    SESSION_COOKIE_SECURE = True
 
-SECURE_SSL_REDIRECT =True
 
-# Set session cookies to be transmitted only over HTTPS
-SESSION_COOKIE_SECURE = True
 
 # Application definition
 
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "authApp",
     "core",
     "vendor",
-    
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     
@@ -64,6 +64,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -122,7 +124,7 @@ if DEBUG == False:
         }
     }
 
-
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Password validation

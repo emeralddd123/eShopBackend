@@ -7,48 +7,6 @@ from .utils import generate_sku, get_upload_path
 from django.utils import timezone
 
 
-class ImageAlbum(models.Model):
-    def default(self):
-        return self.images.filter(default=True).first()
-
-    def thumbnails(self):
-        return self.images.filter(width__lt=100, length_lt=100)
-
-
-class Image(models.Model):
-    name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to=get_upload_path)
-    default = models.BooleanField(default=False)
-    width = models.FloatField(default=100)
-    length = models.FloatField(default=100)
-    album = models.ForeignKey(
-        ImageAlbum,
-        blank=True,
-        null=True,
-        related_name="images",
-        on_delete=models.CASCADE,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.created_at = timezone.now()
-        super(Image, self).save(*args, **kwargs)
-
-
-# Signal function to create an ImageAlbum instance for each new Image instance
-@receiver(post_save, sender=Image)
-def create_image_album(sender, instance, created, **kwargs):
-    if created and not instance.album:
-        album = ImageAlbum.objects.create()
-        instance.album = album
-        instance.save()
-
-
-# models.py - Connect the signal
-post_save.connect(create_image_album, sender=Image)
-
-
 class ProductCategory(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200, blank=False, null=False)
@@ -78,9 +36,6 @@ class Product(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     name = models.CharField(max_length=200)
-    album = models.OneToOneField(
-        ImageAlbum, related_name="model", on_delete=models.CASCADE
-    )
     desc = models.TextField()
     sku = models.CharField(max_length=200, unique=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -104,6 +59,22 @@ class Product(models.Model):
             models.Index(fields=["-created_at"]),
         ]
 
+
+class Image(models.Model):
+    image = models.ImageField(upload_to=get_upload_path)
+    product = models.ForeignKey(
+        Product,
+        blank=True,
+        null=True,
+        related_name="images",
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.created_at = timezone.now()
+        super(Image, self).save(*args, **kwargs)
 
 class Order(models.Model):
     PENDING = "PENDING"

@@ -22,7 +22,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-schema_view = get_schema_view(openapi.Info(
+schema_view = get_schema_view(
+    openapi.Info(
         title="eShop Backend API",
         description="A Multi-Vendor Ecommerce Application",
         default_version="1.1.0",
@@ -34,6 +35,8 @@ urlpatterns = [
     path("auth/", include("authApp.urls")),
     path("", include("core.urls")),
     path("vendor/", include("vendor.urls")),
-    path("docs", schema_view.with_ui('swagger', cache_timeout=0),
-        name="swagger-schema")
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path(
+        "docs", schema_view.with_ui("swagger", cache_timeout=0), name="swagger-schema"
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
