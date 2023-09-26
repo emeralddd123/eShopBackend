@@ -33,7 +33,6 @@ class SummaryImageSerializer(serializers.ModelSerializer):
         fields = ["title", "image", "default"]
 
 
-
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCategory
@@ -49,8 +48,19 @@ class SummaryProductCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    categories = SummaryProductCategorySerializer(many=True)
-    images = ImageSerializer(many=True)
+    categories = SummaryProductCategorySerializer(many=True, read_only=True)
+    set_categories = serializers.ListField(
+        child=serializers.PrimaryKeyRelatedField(queryset=ProductCategory.objects.all()),
+        write_only=True
+    ) #going to return queryset
+    images = ImageSerializer(many=True, read_only=True)
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(
+            max_length=4 * 1024 * 1024,  # 4MB in bytes
+            allow_empty_file=False, use_url=False
+        ),
+        write_only=True,
+    )
 
     class Meta:
         model = Product
@@ -60,19 +70,30 @@ class ProductSerializer(serializers.ModelSerializer):
             "quantity",
             "name",
             "images",
+            "uploaded_images",
             "desc",
             "sku",
             "price",
             "categories",
+            "set_categories"
         ]
-        read_only_fields = ["id", "vendor", "sku"]
-        
+        read_only_fields = ["id", "sku"]
+        write_only_fields = ["set_categories"]
+
     def create(self, validated_data):
-        images = validated_data.pop('images')
-        product = Product.objects.create(**validated_data)
-        for image in images:
-            new_image = Image.objects.create(product=product, image=image)
-            new_image.save()
+        uploaded_images = validated_data.pop("uploaded_images")
+        category_ids = validated_data.pop("set_categories")
+        
+        with transaction.atomic():
+            product = Product.objects.create(**validated_data)
+
+            for image_data in uploaded_images:
+                Image.objects.create(product=product, image=image_data)
+
+            # Get and set product categories
+            category_ids = [category.id for category in category_ids]   #grab only the ids of the ProdCat instance and put in a list
+            categories = ProductCategory.objects.filter(id__in=category_ids)
+            product.categories.set(categories)
         return product
 
 

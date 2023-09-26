@@ -20,8 +20,16 @@ from .serializers import (
 from .models import Product, ProductCategory, Cart, CartItem, Order, Image
 from authApp.models import User
 from rest_framework.response import Response
-from authApp.permissions import IsCustomer, IsVendorOrReadOnly, IsCustomerOrReadOnly, IsAdminOrReadOnly
+from authApp.permissions import (
+    IsCustomer,
+    IsVendorOrReadOnly,
+    IsCustomerOrReadOnly,
+    IsAdminOrReadOnly,
+    IsAuthenticated
+)
 from rest_framework.parsers import MultiPartParser, FormParser
+from PIL import Image as PilImage
+from io import BytesIO
 
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
@@ -29,50 +37,24 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = ProductCategorySerializer
     permission_classes = IsAdminOrReadOnly
 
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     parser_classes = (MultiPartParser, FormParser)
     permission_classes = [IsVendorOrReadOnly]
 
-    # def create(self, serializer):
-    #     try:
-    #         vendor = self.request.user
-    #         quantity = self.request.data.get("quantity")
-    #         name = self.request.data.get("name")
-    #         album = self.request.data.get("album")
-    #         desc = self.request.data.get("desc")
-    #         price = self.request.data.get("price")
-    #         category_list = self.request.data.get("categories")
-    #         img_album = ImageAlbum.objects.create()
-    #         for image in album["images"]:
-    #             Image.objects.create(
-    #                 title=image["title"],
-    #                 image=image["name"],
-    #                 default=image["default"],
-    #                 album=img_album,
-    #             )
-    #         categories = []
-    #         for category in category_list:
-    #             product_category = ProductCategory.objects.get(id=category["id"])
-    #             categories.append(product_category)
+    def create(self, request, *args, **kwargs):
+        # Set the vendor based on the request user
+        request.data['vendor'] = request.user.id
 
-    #         product = Product(
-    #             vendor=vendor,
-    #             quantity=quantity,
-    #             name=name,
-    #             album=img_album,
-    #             desc=desc,
-    #             price=price,
-    #         )
-    #         product.save()
-    #         product.categories.set(categories)
-    #         serializer = ProductSerializer(product)
-    #         return Response(serializer.data, status=201)
-    #     except Exception as e:
-    #         return Response(
-    #             {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-    #         )
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+
 
 
 class CartViewSet(
@@ -152,4 +134,3 @@ class OrderViewSet(ModelViewSet):
 #     serializer_class = ImageSerializer
 #     parser_classes = (MultiPartParser, FormParser)
 #     #permission_classes = [IsVendorOrReadOnly]
-    
