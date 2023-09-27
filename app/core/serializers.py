@@ -50,14 +50,17 @@ class SummaryProductCategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     categories = SummaryProductCategorySerializer(many=True, read_only=True)
     set_categories = serializers.ListField(
-        child=serializers.PrimaryKeyRelatedField(queryset=ProductCategory.objects.all()),
-        write_only=True
-    ) #going to return queryset
+        child=serializers.PrimaryKeyRelatedField(
+            queryset=ProductCategory.objects.all()
+        ),
+        write_only=True,
+    )  # going to return queryset
     images = ImageSerializer(many=True, read_only=True)
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(
             max_length=4 * 1024 * 1024,  # 4MB in bytes
-            allow_empty_file=False, use_url=False
+            allow_empty_file=False,
+            use_url=False,
         ),
         write_only=True,
     )
@@ -75,7 +78,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku",
             "price",
             "categories",
-            "set_categories"
+            "set_categories",
         ]
         read_only_fields = ["id", "sku"]
         write_only_fields = ["set_categories"]
@@ -83,7 +86,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         uploaded_images = validated_data.pop("uploaded_images")
         category_ids = validated_data.pop("set_categories")
-        
+
         with transaction.atomic():
             product = Product.objects.create(**validated_data)
 
@@ -91,7 +94,9 @@ class ProductSerializer(serializers.ModelSerializer):
                 Image.objects.create(product=product, image=image_data)
 
             # Get and set product categories
-            category_ids = [category.id for category in category_ids]   #grab only the ids of the ProdCat instance and put in a list
+            category_ids = [
+                category.id for category in category_ids
+            ]  # grab only the ids of the ProdCat instance and put in a list
             categories = ProductCategory.objects.filter(id__in=category_ids)
             product.categories.set(categories)
         return product
@@ -256,11 +261,15 @@ class CreateOrderSerializer(serializers.Serializer):
 
                 # Update the vendor's balance
                 vendor = product.vendor
-                vendor_balance = VendorBalance.objects.get(vendor=vendor)
-                total_sale_amount = product.price * quantity_ordered
-                vendor_balance.balance += total_sale_amount * Decimal(
-                    "0.95"
-                )  # 5% commision goes to the management
+                vendor_balance, created = VendorBalance.objects.get_or_create(vendor=vendor)
+                if not created:
+                    vendor_balance = VendorBalance.objects.create(vendor=vendor)
+                    
+                total_sale_amount = Decimal(str(product.price)) * Decimal(str(quantity_ordered))
+                commission = total_sale_amount * Decimal("0.05")       # 5% commision goes to the management
+                
+                vendor_balance.balance = Decimal(vendor_balance.balance) + (total_sale_amount - commission) 
+
                 vendor_balance.save()
 
             OrderItem.objects.bulk_create(orderitems)

@@ -58,18 +58,13 @@ class Vendor(User):
         proxy = True
         
     def save(self, *args, **kwargs):
-        from vendor.models import VendorBalance
         # Call the base class's save() method
         super(Vendor, self).save(*args, **kwargs)
-
-        # Create VendorBalance instance if it doesn't exist
-        VendorBalance.objects.get_or_create(vendor=self, defaults={'balance': 0})
 
     def welcome(self):
         return "Only for Vendor"
 
 
-# Create your models here.
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=255)

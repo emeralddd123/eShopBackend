@@ -129,8 +129,4 @@ class OrderViewSet(ModelViewSet):
         return Order.objects.filter(owner=user)
 
 
-# class ImageViewset(ModelViewSet):
-#     queryset = Image.objects.all()
-#     serializer_class = ImageSerializer
-#     parser_classes = (MultiPartParser, FormParser)
-#     #permission_classes = [IsVendorOrReadOnly]
+

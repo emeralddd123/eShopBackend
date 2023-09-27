@@ -1,13 +1,12 @@
 from rest_framework import generics
-from django.forms import model_to_dict
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from .serializers import VendorStoreSerializer, VendorBalanceSerializer
 from .models import VendorBalance, VendorStore
 from core.models import Product
 from core.serializers import SummaryProductSerializer, ProductSerializer
 from authApp.permissions import IsVendorOrReadOnly, IsVendor
+from rest_framework.generics import get_object_or_404
+
 
 
 class VendorView(generics.RetrieveUpdateAPIView):
@@ -17,22 +16,17 @@ class VendorView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         vendor = self.request.user
         vendor_store = VendorStore.objects.get(vendor=vendor)
-        # store_data = VendorStoreSerializer(vendor_store).data
-
-        # vendor_balance = VendorBalance.objects.get(vendor=vendor)
-        # balance_data = VendorBalanceSerializer(vendor_balance).data
-
-        # response_data = {"store_data": store_data, "balance_data": balance_data}
         return vendor_store
 
 
-class VendorStoreView(generics.RetrieveAPIView):
+class VendorStoreView(generics.RetrieveUpdateAPIView):
     serializer_class = VendorStoreSerializer
     queryset = VendorStore.objects.all()
+    permission_classes = [IsVendorOrReadOnly]
     lookup_field = "pk"
 
     def get(self, request, pk):
-        vendor_store = VendorStore.objects.get()
+        vendor_store = get_object_or_404(VendorStore, pk=pk)
         vendor_products = Product.objects.filter(vendor=vendor_store.vendor)
         print(vendor_products)
         store_data = VendorStoreSerializer(vendor_store)
@@ -54,6 +48,8 @@ class VendorBalanceView(generics.RetrieveAPIView):
     
     def get_object(self):
         vendor = self.request.user
-        vendor_balance = VendorBalance.objects.get(vendor=vendor)
+        vendor_balance, created = VendorBalance.objects.get_or_create(vendor=vendor)
+        if not created:
+            vendor_balance = VendorBalance.objects.create(vendor=vendor)
         return vendor_balance
     
