@@ -2,6 +2,7 @@ aiosmtplib==2.0.2
 amqp==5.1.1
 asgiref==3.7.2
 async-timeout==4.0.2
+asyncio==3.4.3
 billiard==4.1.0
 certifi==2023.5.7
 cffi==1.15.1
@@ -19,6 +20,7 @@ defusedxml==0.7.1
 Deprecated==1.2.14
 Django==4.2.2
 django-boost==2.1
+django-cors-headers==4.2.0
 django-environ==0.10.0
 django-extensions==3.2.3
 django-oauth-toolkit==2.3.0
@@ -29,6 +31,7 @@ djoser==2.2.0
 drf-nested-routers==0.93.4
 drf-writable-nested==0.7.0
 drf-yasg==1.21.6
+gunicorn==21.2.0
 idna==3.4
 inflection==0.5.1
 itypes==1.2.0
@@ -64,4 +67,5 @@ urllib3==2.0.3
 user-agents==2.2.0
 vine==5.0.0
 wcwidth==0.2.6
+whitenoise==6.5.0
 wrapt==1.15.0
