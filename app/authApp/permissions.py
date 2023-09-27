@@ -63,8 +63,8 @@ class IsAdminOrReadOnly(BasePermission):
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return True
 
-        # Check if the user is an admin
-        if request.user.is_authenticated and request.user.is_admin and request.user.role=="ADMIN":
+        # Check if the user is a staff
+        if request.user.is_authenticated and request.user.is_staff:
             return True
         raise PermissionDenied(self.message)
     
@@ -108,6 +108,6 @@ class IsAdmin(BasePermission):
     
     def has_permission(self, request, view):
         # Check if the user is an admin
-        if request.user.is_authenticated and request.user.is_admin and request.user.role=="ADMIN":
+        if request.user.is_authenticated and request.user.is_staff:
             return True
         raise PermissionDenied(self.message)

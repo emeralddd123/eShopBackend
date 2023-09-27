@@ -6,9 +6,9 @@ from .serializers import (
     ProductCategorySerializer,
     RefundOrderSerializer,
 )
-from authApp.permissions import IsCustomerOrReadOnly
+from authApp.permissions import IsCustomerOrReadOnly, IsAdminOrReadOnly
 
-class CategoryListView(generics.ListAPIView):
+class CategoryListView(generics.ListAPIView, generics.CreateAPIView):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
     pagination_class = pagination.LimitOffsetPagination
@@ -43,7 +43,4 @@ class RefundOrderView(generics.CreateAPIView, generics.ListAPIView):
             raise PermissionDenied("You do not have permission to log a complaint on this order.")
 
         serializer.save()
-        
-    # def get(self):
-    #     user_refunds = Refund.objects.filter()
-        
+         

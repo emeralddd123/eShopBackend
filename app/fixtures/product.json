@@ -1,0 +1,168 @@
+[
+  {
+    "model": "core.product",
+    "pk": 1,
+    "fields": {
+      "vendor": 2,
+      "quantity": 23,
+      "name": "Dell XPS 13",
+      "desc": "one nice sleek laptop",
+      "sku": "DX1757923",
+      "price": "1499.99",
+      "available": true,
+      "created_at": "2023-09-25T15:37:58.870Z",
+      "updated_at": "2023-09-26T00:12:21.139Z",
+      "categories": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 4,
+    "fields": {
+      "vendor": 2,
+      "quantity": 10,
+      "name": "Microsoft Surface Laptop 4",
+      "desc": "A versatile laptop for work and play",
+      "sku": "MSL42022",
+      "price": "1199.99",
+      "available": true,
+      "created_at": "2023-09-27T10:00:00Z",
+      "updated_at": "2023-09-27T10:00:00Z",
+      "categories": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 5,
+    "fields": {
+      "vendor": 2,
+      "quantity": 12,
+      "name": "HP Spectre x360",
+      "desc": "A convertible laptop with a premium design",
+      "sku": "HPSP1423",
+      "price": "1399.99",
+      "available": true,
+      "created_at": "2023-09-27T11:00:00Z",
+      "updated_at": "2023-09-27T11:00:00Z",
+      "categories": [
+        2,
+        5
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 37,
+    "fields": {
+      "vendor": 2,
+      "quantity": 23,
+      "name": "Dell XPS 13",
+      "desc": "one nice sleek laptop",
+      "sku": "DX1517847",
+      "price": "1499.99",
+      "available": true,
+      "created_at": "2023-09-26T01:28:12.409Z",
+      "updated_at": "2023-09-26T01:28:12.409Z",
+      "categories": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 40,
+    "fields": {
+      "vendor": 2,
+      "quantity": 5,
+      "name": "Asus ROG Zephyrus G15",
+      "desc": "A powerful gaming laptop with a slim design",
+      "sku": "ASROG1523",
+      "price": "1599.99",
+      "available": true,
+      "created_at": "2023-09-27T17:00:00Z",
+      "updated_at": "2023-09-27T17:00:00Z",
+      "categories": [
+        2,
+        6
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 41,
+    "fields": {
+      "vendor": 2,
+      "quantity": 10,
+      "name": "iPhone 13 Pro Max",
+      "desc": "The latest and greatest smartphone from Apple",
+      "sku": "IPH13PM",
+      "price": "999.99",
+      "available": true,
+      "created_at": "2023-09-27T17:30:00Z",
+      "updated_at": "2023-09-27T17:30:00Z",
+      "categories": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 42,
+    "fields": {
+      "vendor": 2,
+      "quantity": 10,
+      "name": "Samsung Galaxy S22 Ultra",
+      "desc": "The best Android smartphone on the market",
+      "sku": "S22U",
+      "price": "1199.99",
+      "available": true,
+      "created_at": "2023-09-27T17:45:00Z",
+      "updated_at": "2023-09-27T17:45:00Z",
+      "categories": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 43,
+    "fields": {
+      "vendor": 2,
+      "quantity": 10,
+      "name": "Google Pixel 6 Pro",
+      "desc": "A great Android smartphone with a unique design",
+      "sku": "P6P",
+      "price": "899.99",
+      "available": true,
+      "created_at": "2023-09-27T18:00:00Z",
+      "updated_at": "2023-09-27T18:00:00Z",
+      "categories": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "core.product",
+    "pk": 50,
+    "fields": {
+      "vendor": 2,
+      "quantity": 5,
+      "name": "Nintendo Switch OLED",
+      "desc": "A new version of the Nintendo Switch with a larger OLED display",
+      "sku": "NSOLED",
+      "price": "349.99",
+      "available": true,
+      "created_at": "2023-09-27T19:00:00Z",
+      "updated_at": "2023-09-27T19:00:00Z",
+      "categories": [
+        8
+      ]
+    }
+  }
+]

@@ -1,0 +1,202 @@
+[
+	{
+		"model": "core.productcategory",
+		"pk": 1,
+		"fields": {
+			"name": "category 1",
+			"desc": "The Genesis",
+			"created_at": "2023-09-26T00:11:17.122Z",
+			"updated_at": "2023-09-26T00:11:17.122Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 2,
+		"fields": {
+			"name": "category 2",
+			"desc": "the second category",
+			"created_at": "2023-09-26T00:11:45.300Z",
+			"updated_at": "2023-09-26T00:11:45.300Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 3,
+		"fields": {
+			"name": "Electronics",
+			"desc": "Category for electronic devices",
+			"created_at": "2023-09-26T08:30:00Z",
+			"updated_at": "2023-09-26T08:30:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 4,
+		"fields": {
+			"name": "Clothing",
+			"desc": "Category for clothing and apparel",
+			"created_at": "2023-09-26T09:15:00Z",
+			"updated_at": "2023-09-26T09:15:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 5,
+		"fields": {
+			"name": "Books",
+			"desc": "Category for books and literature",
+			"created_at": "2023-09-26T10:00:00Z",
+			"updated_at": "2023-09-26T10:00:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 6,
+		"fields": {
+			"name": "Toys",
+			"desc": "Category for children's toys",
+			"created_at": "2023-09-26T11:30:00Z",
+			"updated_at": "2023-09-26T11:30:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 7,
+		"fields": {
+			"name": "Furniture",
+			"desc": "Category for home furniture",
+			"created_at": "2023-09-26T12:45:00Z",
+			"updated_at": "2023-09-26T12:45:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 8,
+		"fields": {
+			"name": "Jewelry",
+			"desc": "Category for fine jewelry",
+			"created_at": "2023-09-26T13:20:00Z",
+			"updated_at": "2023-09-26T13:20:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 9,
+		"fields": {
+			"name": "Sports",
+			"desc": "Category for sports equipment",
+			"created_at": "2023-09-26T14:10:00Z",
+			"updated_at": "2023-09-26T14:10:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 10,
+		"fields": {
+			"name": "Appliances",
+			"desc": "Category for home appliances",
+			"created_at": "2023-09-26T15:00:00Z",
+			"updated_at": "2023-09-26T15:00:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 11,
+		"fields": {
+			"name": "Garden",
+			"desc": "Category for gardening tools",
+			"created_at": "2023-09-26T16:25:00Z",
+			"updated_at": "2023-09-26T16:25:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 12,
+		"fields": {
+			"name": "Beauty",
+			"desc": "Category for beauty products",
+			"created_at": "2023-09-26T17:10:00Z",
+			"updated_at": "2023-09-26T17:10:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 13,
+		"fields": {
+			"name": "Food",
+			"desc": "Category for food and groceries",
+			"created_at": "2023-09-26T18:30:00Z",
+			"updated_at": "2023-09-26T18:30:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 14,
+		"fields": {
+			"name": "Health",
+			"desc": "Category for health and wellness",
+			"created_at": "2023-09-26T19:15:00Z",
+			"updated_at": "2023-09-26T19:15:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 15,
+		"fields": {
+			"name": "Music",
+			"desc": "Category for music and instruments",
+			"created_at": "2023-09-26T20:00:00Z",
+			"updated_at": "2023-09-26T20:00:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 16,
+		"fields": {
+			"name": "Automotive",
+			"desc": "Category for automotive parts",
+			"created_at": "2023-09-26T21:20:00Z",
+			"updated_at": "2023-09-26T21:20:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 17,
+		"fields": {
+			"name": "Home Decor",
+			"desc": "Category for home decoration",
+			"created_at": "2023-09-26T22:10:00Z",
+			"updated_at": "2023-09-26T22:10:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 18,
+		"fields": {
+			"name": "Tools",
+			"desc": "Category for tools and equipment",
+			"created_at": "2023-09-26T23:05:00Z",
+			"updated_at": "2023-09-26T23:05:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 19,
+		"fields": {
+			"name": "Electrical",
+			"desc": "Category for electrical supplies",
+			"created_at": "2023-09-26T23:55:00Z",
+			"updated_at": "2023-09-26T23:55:00Z"
+		}
+	},
+	{
+		"model": "core.productcategory",
+		"pk": 20,
+		"fields": {
+			"name": "Pets",
+			"desc": "Category for pet supplies",
+			"created_at": "2023-09-27T00:30:00Z",
+			"updated_at": "2023-09-27T00:30:00Z"
+		}
+	}
+]
