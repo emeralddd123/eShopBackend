@@ -16,5 +16,5 @@ class VendorBalance(models.Model):
 
 class VendorStore(models.Model):
     vendor = models.OneToOneField(Vendor, on_delete=models.CASCADE, related_name="store")
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
