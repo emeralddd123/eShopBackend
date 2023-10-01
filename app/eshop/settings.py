@@ -227,7 +227,7 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "www.frontend.com/password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "www.frontend.com/username/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "www.frontend/account/activate/{uid}/{token}",
-    "SEND_ACTIVATION_EMAIL": False,
+    "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
     "USER_CREATE_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_CONFIRM_RETYPE": True,
