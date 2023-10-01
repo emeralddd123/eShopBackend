@@ -46,9 +46,10 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # Set the vendor based on the request user
-        request.data['vendor'] = request.user.id
+        request_data = request.data.copy()
+        request_data['vendor'] = request.user.id
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request_data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)

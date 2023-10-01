@@ -9,7 +9,7 @@ from django.utils import timezone
 
 class ProductCategory(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200, blank=False, null=False)
+    name = models.CharField(max_length=200,unique=True, blank=False, null=False)
     desc = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

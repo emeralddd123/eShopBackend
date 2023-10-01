@@ -262,8 +262,6 @@ class CreateOrderSerializer(serializers.Serializer):
                 # Update the vendor's balance
                 vendor = product.vendor
                 vendor_balance, created = VendorBalance.objects.get_or_create(vendor=vendor)
-                if not created:
-                    vendor_balance = VendorBalance.objects.create(vendor=vendor)
                     
                 total_sale_amount = Decimal(str(product.price)) * Decimal(str(quantity_ordered))
                 commission = total_sale_amount * Decimal("0.05")       # 5% commision goes to the management

@@ -28,7 +28,6 @@ class VendorStoreView(generics.RetrieveUpdateAPIView):
     def get(self, request, pk):
         vendor_store = get_object_or_404(VendorStore, pk=pk)
         vendor_products = Product.objects.filter(vendor=vendor_store.vendor)
-        print(vendor_products)
         store_data = VendorStoreSerializer(vendor_store)
         store_products = ProductSerializer(vendor_products, many=True)
         return Response(
@@ -49,7 +48,5 @@ class VendorBalanceView(generics.RetrieveAPIView):
     def get_object(self):
         vendor = self.request.user
         vendor_balance, created = VendorBalance.objects.get_or_create(vendor=vendor)
-        if not created:
-            vendor_balance = VendorBalance.objects.create(vendor=vendor)
         return vendor_balance
     
